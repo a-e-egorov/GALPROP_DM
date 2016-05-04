@@ -1,0 +1,5 @@
+It's necessary to download data files besides the source distribution before the installation. In order to do that:
+1. Download the general data files provided by the GALPROP team at http://galprop.stanford.edu/code.php?option=download  Over there you   can find instructions on how to compose the necessary directory.
+2. Download the DM annihilation data here - "DM.tar.gz" file - and unpack it.
+3. There you will find "DM" directiry. Add it to the general data directory (from step 1) - so-called FITS-data directory - without renaming.
+4. Now the data directory is ready. You just have to pass its path to the "--with-fitsdata=" option of ./configure command during GALPROP  installation.
