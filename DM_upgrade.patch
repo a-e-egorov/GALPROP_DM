@@ -1,0 +1,1203 @@
+diff -c /home/egorov/Desktop/GP/galprop_54_r2766/source/create_galaxy.cc /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/create_galaxy.cc
+*** /home/egorov/Desktop/GP/galprop_54_r2766/source/create_galaxy.cc	2014-06-05 02:05:52.000000000 -0700
+--- /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/create_galaxy.cc	2016-04-18 07:00:44.000000000 -0700
+***************
+*** 327,333 ****
+  
+  // SYNCHROTRON EMISSION
+  
+!   if (galdef.synchrotron >= 1) {                          //AWS20080229
+       
+      galaxy.nu_synch_min =   galdef.nu_synch_min;
+      galaxy.nu_synch_max =   galdef.nu_synch_max;
+--- 327,334 ----
+  
+  // SYNCHROTRON EMISSION
+  
+!   if (galdef.synchrotron >= 1) {             //AWS20080229
+!      if (galdef.DM_int9 == 0) {                        
+       
+      galaxy.nu_synch_min =   galdef.nu_synch_min;
+      galaxy.nu_synch_max =   galdef.nu_synch_max;
+***************
+*** 360,365 ****
+--- 361,390 ----
+      }
+  
+      INFO(sBuf.str());
++       }      //  if DM_int9      AE20140924
++ 
++      else {
++      galaxy.n_nu_synchgrid = galdef.DM_int9;
++      galaxy.nu_synch = new double[galaxy.n_nu_synchgrid];
++      
++     ostringstream sBuf;
++     sBuf << "Synchrotron frequency grid: ";
++ 
++     for (int inusynch = 0; inusynch < galaxy.n_nu_synchgrid; ++inusynch) {
++       
++       galaxy.nu_synch[inusynch] = galdef.DM_double3[inusynch];
++       
++       sBuf << galaxy.nu_synch[inusynch] << " ";
++      
++        }
++ 
++     galaxy.nu_synch_min =   galaxy.nu_synch[0];
++     galaxy.nu_synch_max =   galaxy.nu_synch[galaxy.n_nu_synchgrid-1];
++     galaxy.nu_synch_factor = 1;
++       
++     INFO(sBuf.str());
++       }  //  else DM_int8                AE20140924
++ 
+  
+  		/* Moved to Galprop.cc  Gulli20071003
+      if (galdef.n_spatial_dimensions == 2) {
+diff -c /home/egorov/Desktop/GP/galprop_54_r2766/source/Galdef.cc /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/Galdef.cc
+*** /home/egorov/Desktop/GP/galprop_54_r2766/source/Galdef.cc	2015-04-17 00:43:13.000000000 -0700
+--- /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/Galdef.cc	2016-04-14 10:19:49.000000000 -0700
+***************
+*** 857,864 ****
+      stat= read_galdef_parameter ( filename,parstring,&DM_double1 );
+      strcpy ( parstring,                              "DM_double2" );
+      stat= read_galdef_parameter ( filename,parstring,&DM_double2 );
+!     strcpy ( parstring,                              "DM_double3" );
+!     stat= read_galdef_parameter ( filename,parstring,&DM_double3 );
+      strcpy ( parstring,                              "DM_double4" );
+      stat= read_galdef_parameter ( filename,parstring,&DM_double4 );
+      strcpy ( parstring,                              "DM_double5" );
+--- 857,864 ----
+      stat= read_galdef_parameter ( filename,parstring,&DM_double1 );
+      strcpy ( parstring,                              "DM_double2" );
+      stat= read_galdef_parameter ( filename,parstring,&DM_double2 );
+!     // strcpy ( parstring,                              "DM_double3" );
+!     // stat= read_galdef_parameter ( filename,parstring,&DM_double3 );
+      strcpy ( parstring,                              "DM_double4" );
+      stat= read_galdef_parameter ( filename,parstring,&DM_double4 );
+      strcpy ( parstring,                              "DM_double5" );
+***************
+*** 893,898 ****
+--- 893,902 ----
+      strcpy ( parstring,                              "DM_int9" );
+      stat= read_galdef_parameter ( filename,parstring,&DM_int9 );
+  
++     DM_double3 = new double[DM_int9];                                         //AE20140924 
++     strcpy ( parstring,                              "DM_double3" );          // 
++     stat= read_galdef_parameter ( filename,parstring,DM_double3,DM_int9 );    //
++ 
+      //output controls
+      strcpy ( parstring,                              "skymap_format" );
+      stat= read_galdef_parameter ( filename,parstring,&skymap_format );
+***************
+*** 1585,1591 ****
+      cout<<"  DM_double0            "<<DM_double0           <<endl;
+      cout<<"  DM_double1            "<<DM_double1           <<endl;
+      cout<<"  DM_double2            "<<DM_double2           <<endl;
+!     cout<<"  DM_double3            "<<DM_double3           <<endl;
+      cout<<"  DM_double4            "<<DM_double4           <<endl;
+      cout<<"  DM_double5            "<<DM_double5           <<endl;
+      cout<<"  DM_double6            "<<DM_double6           <<endl;
+--- 1589,1598 ----
+      cout<<"  DM_double0            "<<DM_double0           <<endl;
+      cout<<"  DM_double1            "<<DM_double1           <<endl;
+      cout<<"  DM_double2            "<<DM_double2           <<endl;
+!     cout<<"  DM_double3            ";  //<<DM_double3           <<endl;
+!            for (int i=0; i<DM_int9; i++)
+!                cout<<DM_double3[i]<<", ";
+!       cout<<endl;                                                     //AE20140926
+      cout<<"  DM_double4            "<<DM_double4           <<endl;
+      cout<<"  DM_double5            "<<DM_double5           <<endl;
+      cout<<"  DM_double6            "<<DM_double6           <<endl;
+diff -c /home/egorov/Desktop/GP/galprop_54_r2766/source/Galdef.h /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/Galdef.h
+*** /home/egorov/Desktop/GP/galprop_54_r2766/source/Galdef.h	2015-04-17 00:43:13.000000000 -0700
+--- /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/Galdef.h	2016-04-14 10:22:58.000000000 -0700
+***************
+*** 187,193 ****
+    int DM_antiprotons;                   // 1=compute antiprotons from DM
+    int DM_gammas;                        // 1=compute gamma rays from DM
+    double                                // user-defined params of DM (double)
+!     DM_double0, DM_double1, DM_double2, DM_double3, DM_double4,
+      DM_double5, DM_double6, DM_double7, DM_double8, DM_double9;
+    int                                   // user-defined params of DM (int)
+      DM_int0, DM_int1, DM_int2, DM_int3, DM_int4,
+--- 187,193 ----
+    int DM_antiprotons;                   // 1=compute antiprotons from DM
+    int DM_gammas;                        // 1=compute gamma rays from DM
+    double                                // user-defined params of DM (double)
+!     DM_double0, DM_double1, DM_double2, *DM_double3, DM_double4,            //AE2014 - added pointer *
+      DM_double5, DM_double6, DM_double7, DM_double8, DM_double9;
+    int                                   // user-defined params of DM (int)
+      DM_int0, DM_int1, DM_int2, DM_int3, DM_int4,
+diff -c /home/egorov/Desktop/GP/galprop_54_r2766/source/Galprop.h /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/Galprop.h
+*** /home/egorov/Desktop/GP/galprop_54_r2766/source/Galprop.h	2014-05-14 23:18:12.000000000 -0700
+--- /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/Galprop.h	2016-04-14 11:09:05.000000000 -0700
+***************
+*** 49,56 ****
+      int gen_DM_source ( Particle& );
+      int gen_DM_emiss();
+      double DM_profile ( double, double, double );
+!     double DM_profile_av ( double,double,double,double,double );
+!     double DM_profile_av ( double,double,double,double,double,double,double );
+      int gen_DM_skymap();
+      int store_DM_emiss();
+      int store_DM_skymap();
+--- 49,57 ----
+      int gen_DM_source ( Particle& );
+      int gen_DM_emiss();
+      double DM_profile ( double, double, double );
+!     double DM_profile_av ( double,double,double,double ); //AE20131218
+!     double DM_profile_av ( double,double,double,double,double,double ); //AE20131218
+!     double DM_subs_boost ( double, double, double ); //AE20131218
+      int gen_DM_skymap();
+      int store_DM_emiss();
+      int store_DM_skymap();
+diff -c /home/egorov/Desktop/GP/galprop_54_r2766/source/gen_DM_source.cc /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/gen_DM_source.cc
+*** /home/egorov/Desktop/GP/galprop_54_r2766/source/gen_DM_source.cc	2013-10-09 07:28:17.000000000 -0700
+--- /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/gen_DM_source.cc	2016-04-18 06:14:39.000000000 -0700
+***************
+*** 3,16 ****
+  // * gen_DM_source.cc *                             galprop package * 9/09/2005 
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  
+- 
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  // The routine gen_DM_source calculates the source functions of the products of the
+! // dark matter (DM) particle annihilation [cm^-3 s^-1 MeV^-1].
+  // The routine can be used to calculate source function of positrons, electrons,
+  // and antiprotons.
+! // Use gen_DM_emiss to define gamma-ray emissivity (cm^-3 s^-1 MeV^-1)
+! // in terms (dn/dEdt *c/4pi), where n is the number density, c is speed of light.
+  // The user must use the parameters DM_double0-9 and DM_int0-9 (galdef-file) to 
+  // specify the Galactic DM profile, branching, decay channels, and spectra (see 
+  // the template below). The DM profile is defined in the DM_profile routine.
+--- 3,15 ----
+  // * gen_DM_source.cc *                             galprop package * 9/09/2005 
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  // The routine gen_DM_source calculates the source functions of the products of the
+! // dark matter (DM) particle annihilation [c/(4\pi) cm^-3 s^-1 MeV^-1].
+  // The routine can be used to calculate source function of positrons, electrons,
+  // and antiprotons.
+! // Use gen_DM_emiss to define gamma-ray emissivity (cm^-3 s^-1 MeV^-1 sr^-1)
+! // in terms (dn/dEdt *1/4pi), where n is the number density, c is speed of light (AE20131226 - c is removed, sr^-1 is added above - suggested typos).
+  // The user must use the parameters DM_double0-9 and DM_int0-9 (galdef-file) to 
+  // specify the Galactic DM profile, branching, decay channels, and spectra (see 
+  // the template below). The DM profile is defined in the DM_profile routine.
+***************
+*** 19,24 ****
+--- 18,28 ----
+  //
+  // See example in Moskalenko I.V., Strong A.W. 1999, Phys. Rev. D 60, 063003
+  // and realization below.
++ 
++ // Modified, improved and updated by Andrey Egorov - 11/29/2013-... .
++ 
++ //Attention! - DM_profile_av function below bears in fact DM density squared average.
++ 
+  //=="====!===="====!===="====!===="====!===="====!===="====!===="====!===="====!
+  using namespace std;
+  #include"galprop_classes.h"
+***************
+*** 28,121 ****
+  
+  #include <string.h>
+  
+  //extern "C" void RHO_DARKSUSY_F77(double*,double*,double*,double*); //IMOS20060901
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  
+  int Galprop::gen_DM_source(Particle &particle)
+  {
+!    cout<<"gen_DM_source"<<endl;
+!    cout<<"generating "<<particle.name<<" source function for n_spatial_dimensions="
+!        <<gcr[0].n_spatial_dimensions<<endl;
+! 
+!    double DMwidth,DMbranching,   // annihilation product distribution
+!      DMsecondary_spectrum,       // spectrum of secondaries from DM annihilation
+!      DME0,                       // delta function energy used for Green's function
+!      DMmass  =galdef.DM_double2, // DM particle mass
+!      DMcs_v  =galdef.DM_double9, // DM <cross_sec*V> -thermally overaged, cm3 s-1 
+!      dzz=0.01;                   // kpc, gas averaging step
+!    int stat=0;
+  
+!  // define the spectra of annihilation products: positrons, electrons, antiprotons
+  
+!    if(strcmp(particle.name,"DM_positrons")==0)
+!      {
+!        DMwidth     =galdef.DM_double3;
+!        DMbranching =galdef.DM_double4;
+!      }
+  
+-    if(strcmp(particle.name,"DM_electrons")==0)
+-      {
+-        DMwidth     =galdef.DM_double5;
+-        DMbranching =galdef.DM_double6;
+-      }
+- 
+-    if(strcmp(particle.name,"DM_antiprotons")==0)
+-      {
+-        DMwidth     =galdef.DM_double7;
+-        DMbranching =galdef.DM_double8;
+-      }
+  
+  // assign the source function (2D)
+  
+     if(galaxy.n_spatial_dimensions==2)
+       {
+         for(int ir=0; ir<gcr[0].n_rgrid; ir++)
+  	 {
+  	   for(int iz=0; iz<gcr[0].n_zgrid; iz++)
+  	     {
+  	       for(int ip=0; ip<particle.n_pgrid; ip++)
+  		 {
+- // test of electron propagation vs analytical calculations IMOS20061030
+- // to run test, assign galdef.DM_int0=99, other parameters:
+- // galdef.DM_double6 - the half thickness of the disk source distribution (e.g. 0.1 kpc), the source 
+- //                     distribution is uniform within the disk; normalization =1 at the normalization energy
+- // galdef.DM_double7 - the photon field energy density (e.g. 1 eV/cc)
+- // galdef.DM_double8 - the normalization energy of the electron spectrum (e.g. 10^3 MeV)
+- // galdef.DM_double9 - the injection spectral index of electrons (e.g. 2.4)
+- 		   if(abs(galdef.DM_int0)==99 && particle.A==0) 
+- 		     {
+- 		       if(strcmp(particle.name,"DM_electrons")==0) //numerical  solution "DM_electrons"
+- 			 particle.secondary_source_function.d2[ir][iz].s[ip]= 
+- 			   (galdef.DM_double6 <= fabs(galaxy.z[iz])) ? 0.:
+- 			   C/4./Pi*pow(particle.Ekin[ip]/galdef.DM_double8,-galdef.DM_double9);
+- 		       if(strcmp(particle.name,"DM_positrons")==0) //analytical solution "DM_positrons"
+- 			 particle.secondary_source_function.d2[ir][iz].s[ip]=0.;
+- 		       continue;		     
+- 		     }
+- // end of the test area
+  		   if(galdef.DM_int1==9) // Green's function to work with DarkSUSY IMOS20060901
+  		     {
+  		       if(DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) continue;
+  		       particle.secondary_source_function.d2[ir][iz].s[ip]
+! 			 +=pow(DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz, dzz),2)
+  			 *DMsecondary_spectrum*DMbranching/4./Pi*C;
+  		       continue;
+! 		     }
+  		   if(particle.Etot[ip]*1.e-3<=DMmass) 
+! 		     particle.secondary_source_function.d2[ir][iz].s[ip]+= DMcs_v*
+! 		       pow(DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz, dzz)/DMmass,2)
+! 		       *C/4./Pi*DMbranching*exp(-pow((DMmass-particle.Etot[ip]*1.e-3)/DMwidth,2))/DMmass*1.e-3;
+  		 } // ip
+  	     }  //  iz
+  	 }  //  ir
+       }  //  particle.n_spatial_dimensions==2
+     
+  // assign the source function (3D)
+  
+     if(galaxy.n_spatial_dimensions==3)
+       {
+!        for(int ix=0; ix<gcr[0].n_xgrid; ix++)
+  	 {
+  	   for(int iy=0; iy<gcr[0].n_ygrid; iy++)
+  	     {
+--- 32,208 ----
+  
+  #include <string.h>
+  
++ #include <ErrorLogger.h>
++ #include<sstream>
++ 
++ #include <gsl/gsl_integration.h>
++ 
+  //extern "C" void RHO_DARKSUSY_F77(double*,double*,double*,double*); //IMOS20060901
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  
+  int Galprop::gen_DM_source(Particle &particle)
+  {
+!  cout<<"gen_DM_source"<<endl;
+!  cout<<"generating "<<particle.name<<" source function for n_spatial_dimensions="<<gcr[0].n_spatial_dimensions<<endl;
+  
+!  const double DMmass=galdef.DM_double2,                               // DM particle mass, GeV
+!               DMcs_v=galdef.DM_double9;                               // DM <cross_sec*V> -thermally averaged, cm3 s-1
+!        double DME0,DMwidth,DMbranching,DMsecondary_spectrum;          // obsolete - needed for DarkSUSY
+!  int stat=0, iwm=0, SD_key=galdef.DM_int4, channel_key=galdef.DM_int2;         
+! 
+!  FILE *fDM;                                               // file with annihilation yields data for p* and ee*
+!  const long NsDMy=55242, NDMm=62, NsDMym=891;             // for operation with yields data 
+!  long jDMyw=0;
+!  double DMy[NsDMy], DMym[NsDMym];                                      
+!  const double mt[NDMm] = {5.,6.,8.,10.,15.,20.,25.,30.,40.,50.,60.,70.,80.,90.,100.,110.,120.,130.,140.,150.,160.,180.,200.,220.,240.,260.,280.,300.,330.,360.,
+! 400.,450.,500.,550.,600.,650.,700.,750.,800.,900.,1000.,1100.,1200.,1300.,1500.,1700.,2000.,2500.,3000.,4000.,5000.,6000.,7000.,
+! 8000.,9000.,10000.,12000.,15000.,20000.,30000.,50000.,100000.};   // masses with tabulated yields
+!  const std::string DMDirectory = configure.fFITSDataDirectory+"DM/";
+!  std::string filename = DMDirectory;
+!  const char *str;
+! 
+!  if(strcmp(particle.name,"DM_antiprotons")==0)
+!    {
+!     SD_key=0;
+!     switch(channel_key)
+!     {
+!      case 1: filename += "DM-b-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // bb* channel
+!      case 2: filename += "DM-tau-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \tau^+\tau^- channel
+!      case 3: filename += "DM-W-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // W^+W^- channel
+!      case 4: filename += "DM-mu-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \mu^+\mu^- channel
+!      case 5: filename += "DM-q-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // qq* channel
+!      case 6: filename += "DM-Z-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // Z0Z0 channel
+!      case 7: filename += "DM-h-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // hh channel
+!     }
+!    }
+!  if(strcmp(particle.name,"DM_electrons")==0 || strcmp(particle.name,"DM_positrons")==0)
+!    {
+!     switch(channel_key)
+!     {
+!      case 1: filename += "DM-b-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // bb* channel
+!      case 2: filename += "DM-tau-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \tau^+\tau^- channel
+!      case 3: filename += "DM-W-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // W^+W^- channel
+!      case 4: filename += "DM-mu-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \mu^+\mu^- channel
+!      case 5: filename += "DM-q-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // qq* channel
+!      case 6: filename += "DM-Z-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // Z0Z0 channel
+!      case 7: filename += "DM-h-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // hh channel
+!     }
+!    } 
+  
+!  fseek(fDM, 0, SEEK_SET);
+!  for (long jDMy=0; jDMy<NsDMy; jDMy++)
+!       { 
+!        fscanf(fDM, "%lf", &DMy[jDMy]);
+!       }
+!  fclose(fDM);
+  
+  
++  for(int ia=0; ia<NDMm; ia++) 
++     {
++      if(DMmass==mt[ia]) 
++        {iwm=ia+1;                                                       // yields preparation from mass analysis
++         break;
++        }
++     }
++  if(iwm>=1)
++    {
++     for(int ib=0; ib<NsDMym; ib++) DMym[ib]=DMy[(iwm-1)*NsDMym+ib];
++    }
++  else
++    {
++     while (DMmass>mt[iwm]) iwm++;
++     for(int ic=0;ic<NsDMym;ic++) DMym[ic]=DMy[(iwm-1)*NsDMym+ic]+((DMy[iwm*NsDMym+ic]-DMy[(iwm-1)*NsDMym+ic])*(DMmass-mt[iwm-1]))/(mt[iwm]-mt[iwm-1]);
++    } 
++   
+  // assign the source function (2D)
+  
+     if(galaxy.n_spatial_dimensions==2)
+       {
++ #pragma omp parallel for schedule(dynamic) default(shared) private(jDMyw)
+         for(int ir=0; ir<gcr[0].n_rgrid; ir++)
+  	 {
+  	   for(int iz=0; iz<gcr[0].n_zgrid; iz++)
+  	     {
+  	       for(int ip=0; ip<particle.n_pgrid; ip++)
+  		 {
+  		   if(galdef.DM_int1==9) // Green's function to work with DarkSUSY IMOS20060901
+  		     {
+  		       if(DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) continue;
+  		       particle.secondary_source_function.d2[ir][iz].s[ip]
+! 			 +=DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz)
+  			 *DMsecondary_spectrum*DMbranching/4./Pi*C;
+  		       continue;
+! 		     } // end of DarkSUSY area
+  		   if(particle.Etot[ip]*1.e-3<=DMmass) 
+!                      {
+!                        if(particle.Ekin[ip]*1.e-3<pow(10,-8.9)*DMmass)
+!                           particle.secondary_source_function.d2[ir][iz].s[ip]+=0;
+!                        else
+!                            {
+!                             jDMyw=lround(100.*log10(particle.Ekin[ip]/(DMmass*1000.)))+NsDMym-1;
+! 		            particle.secondary_source_function.d2[ir][iz].s[ip]+=(1.+SD_key)*(C/(4.*Pi))*0.5*DMcs_v*
+!                             DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz)*pow(DMmass,-2.)*DM_subs_boost(galaxy.r[ir], 0., galaxy.z[iz])*DMym[jDMyw]/(log(10.)*particle.Ekin[ip]);
+!                            } //else  
+!                      } // if 
+  		 } // ip
+  	     }  //  iz
+  	 }  //  ir
++ if(galdef.verbose>=3)
++ for(int ir=0; ir<gcr[0].n_rgrid; ir++)	  {
++ for(int iz=0; iz<gcr[0].n_zgrid; iz++)    {
++ for(int ip=0; ip<particle.n_pgrid; ip++)  {
++ cout<<galaxy.r[ir]<<" r "<<galaxy.z[iz]<<" z "<<particle.Ekin[ip]<<" Ekin "<<DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz)<<" rho_{DM}_sq_av "<<DM_subs_boost(galaxy.r[ir], 0., galaxy.z[iz])<<" B(r) "<<particle.secondary_source_function.d2[ir][iz].s[ip]<<endl; }}}  //test printout
+       }  //  particle.n_spatial_dimensions==2
+     
+  // assign the source function (3D)
+  
+     if(galaxy.n_spatial_dimensions==3)
+       {
+! #pragma omp parallel for schedule(dynamic) default(shared) private(jDMyw)
+!      for(int ix=0; ix<gcr[0].n_xgrid; ix++)
+  	 {
+  	   for(int iy=0; iy<gcr[0].n_ygrid; iy++)
+  	     {
+***************
+*** 127,147 ****
+  			 {
+  			   if(DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) continue;
+  			   particle.secondary_source_function.d3[ix][iy][iz].s[ip]
+! 			     +=pow(DM_profile_av(galaxy.r[ix], galaxy.r[iy], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz, dzz),2)
+  			     *DMsecondary_spectrum*DMbranching/4./Pi*C;
+  			   continue;
+! 			 }
+  		       if(particle.Etot[ip]*1.e-3<=DMmass) 
+! 			 particle.secondary_source_function.d3[ix][iy][iz].s[ip]+= DMcs_v*
+! 			   pow(DM_profile_av(galaxy.x[ix], galaxy.y[ix], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz, dzz)/DMmass,2)
+! 		       *C/4./Pi*DMbranching*exp(-pow((DMmass-particle.Etot[ip]*1.e-3)/DMwidth,2))/DMmass*1.e-3;
+  		     } //ip
+  		 }  //  iz
+  	     }  //  iy
+! 	 }  //  ix
+       }  //  particle.n_spatial_dimensions==3
+   
+-  // test printout
+  
+     if(galdef.verbose>=2)
+       {
+--- 214,247 ----
+  			 {
+  			   if(DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) continue;
+  			   particle.secondary_source_function.d3[ix][iy][iz].s[ip]
+! 			     +=DM_profile_av(galaxy.r[ix], galaxy.r[iy], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz)
+  			     *DMsecondary_spectrum*DMbranching/4./Pi*C;
+  			   continue;
+! 			 } // end of DarkSUSY area
+! 
+  		       if(particle.Etot[ip]*1.e-3<=DMmass) 
+! 			 {
+!                           if(particle.Ekin[ip]*1.e-3<pow(10,-8.9)*DMmass)
+!                             particle.secondary_source_function.d3[ix][iy][iz].s[ip]+=0;
+!                           else
+!                               {
+!                                jDMyw=lround(100.*log10(particle.Ekin[ip]/(DMmass*1000.)))+NsDMym-1;
+! 		               particle.secondary_source_function.d3[ix][iy][iz].s[ip]+=(1.+SD_key)*(C/(4.*Pi))*0.5*DMcs_v*
+!                                DM_profile_av(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz)*pow(DMmass,-2.)*DM_subs_boost(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz])*DMym[jDMyw]/(log(10.)*particle.Ekin[ip]);
+!                               } //else  
+!                           } // if 
+  		     } //ip
+  		 }  //  iz
+  	     }  //  iy
+! 	 }  //  ix 
+! if(galdef.verbose>=3)
+! for(int ix=0; ix<gcr[0].n_xgrid; ix++)	  {
+! for(int iy=0; iy<gcr[0].n_ygrid; iy++)	  {
+! for(int iz=0; iz<gcr[0].n_zgrid; iz++)	  {
+! for(int ip=0; ip<particle.n_pgrid; ip++)  {
+! cout<<galaxy.x[ix]<<" x "<<galaxy.y[iy]<<" y "<<galaxy.z[iz]<<" z "<<particle.Ekin[ip]<<" Ekin "<<DM_profile_av(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz)<<" rho_{DM}_sq_av "<<DM_subs_boost(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz])<<" B(r) "<<particle.secondary_source_function.d3[ix][iy][iz].s[ip]<<endl;  }}}} //test printout
+       }  //  particle.n_spatial_dimensions==3
+   
+  
+     if(galdef.verbose>=2)
+       {
+***************
+*** 157,168 ****
+  int Galprop::gen_DM_emiss()
+  {
+     cout<<"gen_DM_emiss"<<endl;
+     double 
+!      DMmass      =galdef.DM_double2, // DM particle mass
+!      DMcs_v      =galdef.DM_double9, // DM <cross_sec*V> -thermally overaged, cm3 s-1 
+!      DMbranching =0.1,
+!      dzz=0.01;                       // kpc, gas averaging step
+!    int stat=0;
+  
+     galaxy.DM_emiss=0.;
+  
+--- 257,337 ----
+  int Galprop::gen_DM_emiss()
+  {
+     cout<<"gen_DM_emiss"<<endl;
++    cout<<"generating DM prompt gamma emissivity for n_spatial_dimensions="<<galdef.n_spatial_dimensions<<endl;
++ 
+     double 
+!      DMmass      =galdef.DM_double2,                  // DM particle mass, GeV
+!      DMcs_v      =galdef.DM_double9;                  // DM <cross_sec*V> -thermally overaged, cm3 s-1 
+!    int stat=0, iwm=0, channel_key=galdef.DM_int2;     // last one sets annihilation channel
+! 
+!    FILE *fDMg;                                                 //file with annihilation yields data for gammas
+!    const long NsDMy=55242, NDMm=62, NsDMym=891;             // for operation with yields data 
+!    long jDMyw=0;
+!    double DMy[NsDMy], DMym[NsDMym];                                      
+!    const double mt[NDMm]={5.,6.,8.,10.,15.,20.,25.,30.,40.,50.,60.,70.,80.,90.,100.,110.,120.,130.,140.,150.,160.,180.,200.,220.,240.,260.,280.,300.,330.,360.,
+! 400.,450.,500.,550.,600.,650.,700.,750.,800.,900.,1000.,1100.,1200.,1300.,1500.,1700.,2000.,2500.,3000.,4000.,5000.,6000.,7000.,
+! 8000.,9000.,10000.,12000.,15000.,20000.,30000.,50000.,100000.};   // masses with tabulated yields
+!    const std::string DMDirectory = configure.fFITSDataDirectory+"DM/";
+!    std::string filename = DMDirectory;
+!    const char *str;
+!   
+! 
+!  switch(channel_key)
+!   {
+!    case 1: filename += "DM-b-g.dat";
+!            str = filename.c_str();	
+!            fDMg=fopen(str,"r");
+!            break; //bb* channel
+!    case 2: filename += "DM-tau-g.dat";
+!            str = filename.c_str();	
+!            fDMg=fopen(str,"r");
+!            break; //\tau^+\tau^- channel
+!    case 3: filename += "DM-W-g.dat";
+!            str = filename.c_str();	
+!            fDMg=fopen(str,"r");
+!            break; //W^+W^- channel
+!    case 4: filename += "DM-mu-g.dat";
+!            str = filename.c_str();	
+!            fDMg=fopen(str,"r");
+!            break; //\mu^+\mu^- channel
+!    case 5: filename += "DM-q-g.dat";
+!            str = filename.c_str();	
+!            fDMg=fopen(str,"r");
+!            break; // qq* channel
+!    case 6: filename += "DM-Z-g.dat";
+!            str = filename.c_str();	
+!            fDMg=fopen(str,"r");
+!            break; // Z0Z0 channel
+!    case 7: filename += "DM-h-g.dat";
+!            str = filename.c_str();	
+!            fDMg=fopen(str,"r");
+!            break; // hh channel
+!   }
+! 
+!  fseek(fDMg, 0, SEEK_SET);
+!  for (long jDMy=0; jDMy<NsDMy; jDMy++)
+!       {
+!        fscanf(fDMg, "%lf", &DMy[jDMy]);
+!       }
+!  fclose(fDMg);
+! 
+! 
+!  for(int ia=0; ia<NDMm; ia++) 
+!     {
+!      if(DMmass==mt[ia]) 
+!        {iwm=ia+1;                                                       // yields preparation from mass analysis
+!         break;
+!        }
+!     }
+!  if(iwm>=1)
+!    {
+!     for(int ib=0; ib<NsDMym; ib++) DMym[ib]=DMy[(iwm-1)*NsDMym+ib];
+!    }
+!  else
+!    {
+!     while (DMmass>mt[iwm]) iwm++;
+!     for(int ic=0;ic<NsDMym;ic++) DMym[ic]=DMy[(iwm-1)*NsDMym+ic]+((DMy[iwm*NsDMym+ic]-DMy[(iwm-1)*NsDMym+ic])*(DMmass-mt[iwm-1]))/(mt[iwm]-mt[iwm-1]);
+!    } 
+  
+     galaxy.DM_emiss=0.;
+  
+***************
+*** 170,220 ****
+     
+     if(galdef.n_spatial_dimensions==2)
+       {
+!        cout<<"generating DM emissivity for n_spatial_dimensions="<<galdef.n_spatial_dimensions<<endl;
+         for(int ir=0; ir<gcr[0].n_rgrid; ir++)
+  	 {
+  	   for(int iz=0; iz<gcr[0].n_zgrid; iz++)
+  	     {
+                 for(int iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)
+  		 {
+! 		   if(galaxy.E_gamma[iEgamma]*1.e-3>DMmass) 
+! 		     {
+! 		       galaxy.DM_emiss.d2[ir][iz].s[iEgamma]=0;
+! 		       continue;
+! 		     }
+! 		   galaxy.DM_emiss.d2[ir][iz].s[iEgamma]= DMcs_v *DMbranching/(4.*Pi)// sr^-1 IMOS20060420
+! 		     *pow(DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz, dzz)/DMmass,2)
+! 		     /galaxy.E_gamma[iEgamma];
+! 		 }
+! 	     }
+! 	 }
+!      }
+     if(galdef.n_spatial_dimensions==3)
+       {
+!        cout<<"generating DM emissivity for n_spatial_dimensions="<<galdef.n_spatial_dimensions<<endl;
+!        for(int ix=0; ix<gcr[0].n_rgrid; ix++)
+  	 {
+! 	   for(int iy=0; iy<gcr[0].n_rgrid; iy++)
+  	     {
+  	       for(int iz=0; iz<gcr[0].n_zgrid; iz++)
+  		 {
+  		   for(int iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)
+  		     {
+! 		       if(galaxy.E_gamma[iEgamma]*1.e-3>DMmass) 
+! 			 {
+! 			   galaxy.DM_emiss.d3[ix][iy][iz].s[iEgamma]=0;
+! 			   continue;
+! 			 }
+! 		       galaxy.DM_emiss.d3[ix][iy][iz].s[iEgamma]=  DMcs_v *DMbranching/(4.*Pi) // sr^-1 IMOS20060420
+! 			 *pow(DM_profile_av(galaxy.x[ix], galaxy.y[ix], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz, dzz)/DMmass,2)
+! 			 /galaxy.E_gamma[iEgamma];
+! 		     }
+! 		 }
+! 	     }
+! 	 }
+!      }
+     cout<<" <<<< gen_DM_emiss"<<endl;
+!    return(stat);
+  }
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+--- 339,408 ----
+     
+     if(galdef.n_spatial_dimensions==2)
+       {
+! #pragma omp parallel for schedule(dynamic) default(shared) private(jDMyw)
+         for(int ir=0; ir<gcr[0].n_rgrid; ir++)
+  	 {
+  	   for(int iz=0; iz<gcr[0].n_zgrid; iz++)
+  	     {
+                 for(int iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)
+  		 {
+! 		    if(galaxy.E_gamma[iEgamma]*1.e-3<=DMmass) 
+!                       {
+!                        if(galaxy.E_gamma[iEgamma]*1.e-3<pow(10,-8.9)*DMmass)
+!                           galaxy.DM_emiss.d2[ir][iz].s[iEgamma]+=0;
+!                        else
+!                            {
+!                             jDMyw=lround(100.*log10(galaxy.E_gamma[iEgamma]/(DMmass*1000.)))+NsDMym-1;
+! 		            galaxy.DM_emiss.d2[ir][iz].s[iEgamma]+=(1/(4.*Pi))*0.5*DMcs_v*
+!                           DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz)*pow(DMmass,-2.)*DM_subs_boost(galaxy.r[ir], 0., galaxy.z[iz])*DMym[jDMyw]/(log(10.)*galaxy.E_gamma[iEgamma]);
+!                            } // else  
+!                        } // if 
+! 		  } // iEgamma
+! 	     } // iz
+! 	 } // ir
+! if(galdef.verbose>=3)
+! for(int ir=0; ir<gcr[0].n_rgrid; ir++)	                      {
+! for(int iz=0; iz<gcr[0].n_zgrid; iz++)	                      {
+! for(int iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)   {
+! cout<<galaxy.r[ir]<<" r "<<galaxy.z[iz]<<" z "<<galaxy.E_gamma[iEgamma]<<" Egamma "<<DM_profile_av(galaxy.r[ir], galaxy.z[iz], galaxy.dr, galaxy.dz)<<" rho_{DM}_sq_av "<<DM_subs_boost(galaxy.r[ir], 0., galaxy.z[iz])<<" B(r) "<<galaxy.DM_emiss.d2[ir][iz].s[iEgamma]<<endl;  }}} //test printout
+!      } // if n_sp._dim.
+! 
+     if(galdef.n_spatial_dimensions==3)
+       {
+! #pragma omp parallel for schedule(dynamic) default(shared) private(jDMyw)
+!     for(int ix=0; ix<gcr[0].n_xgrid; ix++)
+  	 {
+! 	   for(int iy=0; iy<gcr[0].n_ygrid; iy++)
+  	     {
+  	       for(int iz=0; iz<gcr[0].n_zgrid; iz++)
+  		 {
+  		   for(int iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)
+  		     {
+! 		       if(galaxy.E_gamma[iEgamma]*1.e-3<=DMmass) 
+!                          {
+!                           if(galaxy.E_gamma[iEgamma]*1.e-3<pow(10,-8.9)*DMmass)
+!                              galaxy.DM_emiss.d3[ix][iy][iz].s[iEgamma]+=0;
+!                           else
+!                               {
+!                                jDMyw=lround(100.*log10(galaxy.E_gamma[iEgamma]/(DMmass*1000.)))+NsDMym-1;
+! 		               galaxy.DM_emiss.d3[ix][iy][iz].s[iEgamma]+=(1/(4.*Pi))*0.5*DMcs_v*
+!                          DM_profile_av(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz)*pow(DMmass,-2.)*DM_subs_boost(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz])*DMym[jDMyw]/(log(10.)*galaxy.E_gamma[iEgamma]);
+!                               } // else  
+!                          } // if 
+! 		     } // iEgamma
+! 		 } // iz
+! 	     } // iy
+! 	 } // ix
+! if(galdef.verbose>=3)
+! for(int ix=0; ix<gcr[0].n_xgrid; ix++)	                      {
+! for(int iy=0; iy<gcr[0].n_ygrid; iy++)	                      {
+! for(int iz=0; iz<gcr[0].n_zgrid; iz++)		              {
+! for(int iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)   {
+! cout<<galaxy.x[ix]<<" x "<<galaxy.y[iy]<<" y "<<galaxy.z[iz]<<" z "<<galaxy.E_gamma[iEgamma]<<" Egamma "<<DM_profile_av(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz], galaxy.dx, galaxy.dy, galaxy.dz)<<" rho_{DM}_sq_av "<<DM_subs_boost(galaxy.x[ix], galaxy.y[iy], galaxy.z[iz])<<" B(r) "<<galaxy.DM_emiss.d3[ix][iy][iz].s[iEgamma]<<endl;  }}}} //test printout
+!      } // if n_sp._dim.
+     cout<<" <<<< gen_DM_emiss"<<endl;
+! 
+!    return stat;
+  }
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+***************
+*** 222,294 ****
+  double Galprop::DM_profile(double Xkpc, double Ykpc, double Zkpc)
+  {
+    double R=sqrt(Xkpc*Xkpc+Ykpc*Ykpc+Zkpc*Zkpc),
+!     Rsun =8.5,                     //kpc, galactocentric distance of the solar system 
+!     Rc         =galdef.DM_double0, //core radius
+!     rho0       =galdef.DM_double1; //local DM mass density
+    int profile_key =galdef.DM_int0; //profile type
+    
+    switch(profile_key)
+      {
+!     case 0:   //NFW profile
+!       return(rho0*Rc/R*pow(1.+R/Rc,-2));
+        
+!     case 1:   //isothermal profile
+!       return(rho0*(pow(Rc,2)+pow(Rsun,2))/(pow(Rc,2)+pow(R,2)));
+        
+!     case 2:   //Evans profile
+!       return(rho0*pow(pow(Rc,2)+pow(Rsun,2),2)/(3.*pow(Rc,2)+pow(Rsun,2))
+! 	     *(3.*pow(Rc,2)+pow(R,2))/pow(pow(Rc,2)+pow(R,2),2));
+        
+!     case 3:   //alternative profile
+!       return(rho0*pow(Rc+Rsun,2)/pow(Rc+R,2));
+        
+      case 9:   //DarkSUSY profile (use only if the DarkSUSY and GALPROP combined) IMOS20060901
+        RHO_DARKSUSY_F77(&Xkpc,&Ykpc,&Zkpc,&rho0);
+- 
+        if(rho0<0.)
+  	{
+  	  cout<<"gen_DM_source: rho_darksusy() function is not defined"<<endl;
+  	  exit(0);
+  	}
+        return(rho0);
+  
+!     default:
+!       return(rho0);
+      }
+  }
+!   
+  
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+  
+!  double Galprop::DM_profile_av(double r,double z,double dr,double dz,double dzz)
+     {  
+!      double DM_profile_av_=0.0;
+!      int nuse=0;
+!      
+!      for (double zz=z-dz/2.; zz<=z+dz/2.; zz+=dzz)
+!        for (double rr=r-dr/2.; rr<=r+dr/2.; rr+=dr/10.)
+! 	 { 
+! 	   if (rr<0.) continue;
+! 	   DM_profile_av_+=DM_profile(rr,0,zz);
+! 	   nuse++; 
+! 	 }
+!      return (DM_profile_av_/nuse);
+!    }
+   
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+   
+!  double Galprop::DM_profile_av(double x,double y,double z,double dx,double dy,double dz,double dzz)
+!    {  
+!      double DM_profile_av_=0.0;
+!      int nuse=0;
+!      
+!      for (double zz=z-dz/2.; zz<=z+dz/2.; zz+=dzz)
+!        for (double xx=x-dx/2.; xx<=x+dx/2.; xx+=dx/10.)
+! 	 for (double yy=y-dy/2.; yy<=y+dy/2.; yy+=dy/10.)
+! 	   {
+! 	     DM_profile_av_+=DM_profile(xx,yy,zz);
+! 	     nuse++;
+! 	   }
+!      return DM_profile_av_/nuse;
+!    }
+   
+--- 410,646 ----
+  double Galprop::DM_profile(double Xkpc, double Ykpc, double Zkpc)
+  {
+    double R=sqrt(Xkpc*Xkpc+Ykpc*Ykpc+Zkpc*Zkpc),
+!     Rc         =galdef.DM_double0, //core radius, kpc
+!     rho0       =galdef.DM_double1, //scale DM mass density, GeV cm^-3
+!     Rtr        =galdef.DM_double8, //truncation radius for the NFW profile, where density goes flat, kpc
+!     aEin       =galdef.DM_double7, //\alpha parameter for the Einasto profile
+!     gammaNFW   =galdef.DM_double6; //\gamma parameter for the generalized NFW profile
+    int profile_key =galdef.DM_int0; //profile type
+    
+    switch(profile_key)
+      {
+!     case 0:   //generalized NFW profile
+!       return(rho0*pow(fmax(R,Rtr)/Rc,-gammaNFW)*pow(1.+fmax(R,Rtr)/Rc,gammaNFW-3.));
+!       break;
+        
+!     case 1:   //Isothermal profile
+!       return(rho0/(1.+pow(R/Rc,2.)));
+!       break;
+        
+!     case 2:   //Einasto profile
+!       return(rho0*exp(-2./aEin*(pow(R/Rc,aEin)-1.)));
+!       break;
+        
+!     case 3:   //Burkert profile
+!       return(rho0/((1.+R/Rc)*(1.+pow(R/Rc,2.))));
+!       break;
+        
+      case 9:   //DarkSUSY profile (use only if the DarkSUSY and GALPROP combined) IMOS20060901
+        RHO_DARKSUSY_F77(&Xkpc,&Ykpc,&Zkpc,&rho0);
+        if(rho0<0.)
+  	{
+  	  cout<<"gen_DM_source: rho_darksusy() function is not defined"<<endl;
+  	  exit(0);
+  	}
+        return(rho0);
++       break;
+  
+!     default: cout << "No valid DM profile specified!" << endl;
+      }
+  }
+! //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|  
+! 
+! struct profile_params{double rho05; double Rc5; double Rtra5; double gamma5;};    
+! 
+! double DM_profile_av_NFW(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!    double Rtra5 = (params->Rtra5);
+!    double gamma5 = (params->gamma5);  
+!  return(pow(rho05*pow(fmax(r1,Rtra5)/Rc5,-gamma5)*pow(1.+fmax(r1,Rtra5)/Rc5,gamma5-3.),2.)*4.*Pi*pow(r1,2.));
+!         }
+! 
+! double DM_profile_av_Iso(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!   return(pow(rho05/(1.+pow(r1/Rc5,2.)),2.)*4.*Pi*pow(r1,2.));
+!         }
+! 
+! double DM_profile_av_Ein(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!    double Rtra5 = (params->Rtra5);
+!   return(pow(rho05*exp(-2./Rtra5*(pow(r1/Rc5,Rtra5)-1.)),2.)*4*Pi*pow(r1,2.));
+!         }
+! 
+! double DM_profile_av_Bur(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!   return(pow(rho05/((1.+r1/Rc5)*(1.+pow(r1/Rc5,2.))),2.)*4*Pi*pow(r1,2.));
+!         }  // for 3D
+! 
+! double DM_profile_av_NFW_2D(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!    double Rtra5 = (params->Rtra5);
+!    double gamma5 = (params->gamma5);  
+!  return(pow(rho05*pow(fmax(r1,Rtra5)/Rc5,-gamma5)*pow(1.+fmax(r1,Rtra5)/Rc5,gamma5-3.),2.)*r1);
+!         }
+! 
+! double DM_profile_av_Iso_2D(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!   return(pow(rho05/(1.+pow(r1/Rc5,2.)),2.)*r1);
+!         }
+! 
+! double DM_profile_av_Ein_2D(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!    double Rtra5 = (params->Rtra5);
+!   return(pow(rho05*exp(-2./Rtra5*(pow(r1/Rc5,Rtra5)-1.)),2.)*r1);
+!         }
+! 
+! double DM_profile_av_Bur_2D(double r1, void *p) {
+!    struct profile_params * params = (struct profile_params *)p;
+!    double rho05 = (params->rho05);
+!    double Rc5 = (params->Rc5);
+!   return(pow(rho05/((1.+r1/Rc5)*(1.+pow(r1/Rc5,2.))),2.)*r1);
+!         }  // for 2D
+  
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+  
+!  double Galprop::DM_profile_av(double r,double z,double dr,double dz)
+     {  
+!      double DM_profile_av_=0., rho0 =galdef.DM_double1;
+!      int nuse=0, profile_key =galdef.DM_int0; 
+! 
+!    if (abs(r)<1.e-6 && abs(z)<1.e-6) 
+!      {  
+!       gsl_integration_workspace *w = gsl_integration_workspace_alloc(100000);
+!       double result, error;
+!       gsl_function F;
+!        switch(profile_key)
+!         {
+!          case 0: {
+!           struct profile_params params = {galdef.DM_double1, galdef.DM_double0, galdef.DM_double8, galdef.DM_double6};
+!           F.function = &DM_profile_av_NFW_2D;  
+!           F.params = &params;  }
+!           break;
+!          case 1:  {
+!           struct profile_params params = {galdef.DM_double1, galdef.DM_double0, 0., 0.};
+!           F.function = &DM_profile_av_Iso_2D; 
+!           F.params = &params; }
+!           break;
+!          case 2: { struct profile_params params = {galdef.DM_double1, galdef.DM_double0, galdef.DM_double7, 0.};
+!           F.function = &DM_profile_av_Ein_2D; 
+!           F.params = &params; }
+!           break;
+!          case 3: { struct profile_params params = {galdef.DM_double1, galdef.DM_double0, 0., 0.};
+!           F.function = &DM_profile_av_Bur_2D; 
+!           F.params = &params; }
+!           break;
+!          case 9: {  RHO_DARKSUSY_F77(&r,&z,&z,&rho0); }
+!           break;
+!          default: cout << "No valid DM profile specified!" << endl;
+!         }  //switch
+!      gsl_integration_qag(&F, 0., galaxy.dr/sqrt(Pi), 0., 0.01, 100000, 1, w, &result, &error);
+!      gsl_integration_workspace_free (w);
+!      return(2*Pi/pow(galaxy.dr,2.)*result);
+!     }  //if
+! 
+!    else 
+!        {
+!         for (double zz=z-0.5*dz; zz<=z+0.5*dz; zz+=0.02*dz)
+!             {
+!              for (double rr=r-0.5*dr; rr<=r+0.5*dr; rr+=0.02*dr)
+! 	         { 
+! 	           if (rr<0.) continue;
+! 	           DM_profile_av_+=pow(DM_profile(rr,0.,zz), 2.);
+! 	           nuse++; 
+! 	         } //rr
+!              } //zz
+!          return (DM_profile_av_/nuse);
+!         }  //else
+!     }
+!    
+   
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
++ 
+   
+!  double Galprop::DM_profile_av(double x,double y,double z,double dx,double dy,double dz)
+!   {  
+!      double DM_profile_av_=0., rho0 =galdef.DM_double1;
+!      int nuse =0, profile_key =galdef.DM_int0; 
+! 
+!   if (abs(x)<1.e-6 && abs(y)<1.e-6 && abs(z)<1.e-6) 
+!      {  
+!       gsl_integration_workspace *w = gsl_integration_workspace_alloc(100000);
+!       double result, error;
+!       gsl_function F;
+!        switch(profile_key)
+!         {
+!          case 0: {
+!           struct profile_params params = {galdef.DM_double1, galdef.DM_double0, galdef.DM_double8, galdef.DM_double6};
+!           F.function = &DM_profile_av_NFW;  
+!           F.params = &params;  }
+!           break;
+!          case 1:  {
+!           struct profile_params params = {galdef.DM_double1, galdef.DM_double0, 0., 0.};
+!           F.function = &DM_profile_av_Iso; 
+!           F.params = &params; }
+!           break;
+!          case 2: { struct profile_params params = {galdef.DM_double1, galdef.DM_double0, galdef.DM_double7, 0.};
+!           F.function = &DM_profile_av_Ein; 
+!           F.params = &params; }
+!           break;
+!          case 3: { struct profile_params params = {galdef.DM_double1, galdef.DM_double0, 0., 0.};
+!           F.function = &DM_profile_av_Bur; 
+!           F.params = &params; }
+!           break;
+!          case 9: {  RHO_DARKSUSY_F77(&x,&y,&z,&rho0); }
+!           break;
+!          default: cout << "No valid DM profile specified!" << endl;
+!         }  //switch
+!      gsl_integration_qag(&F, 0., galaxy.dx*cbrt(3./(4.*Pi)), 0., 0.01, 100000, 1, w, &result, &error);
+!      gsl_integration_workspace_free (w);
+!      return(result/pow(galaxy.dx,3.));
+!     }  //if
+! 
+!   else {
+!         for (double zz=z-0.5*dz; zz<z+0.52*dz; zz+=0.1*dz)
+!            {
+!             for (double xx=x-0.5*dx; xx<x+0.52*dx; xx+=0.1*dx)
+!                 {
+!                  for (double yy=y-0.5*dy; yy<y+0.52*dy; yy+=0.1*dy)
+! 	             {
+! 	               DM_profile_av_+=pow(DM_profile(xx,yy,zz), 2.);
+! 	               nuse++;
+! 	             } //yy
+!                 } //xx
+!            } //zz
+!        return (DM_profile_av_/nuse);
+!       } //else
+!     }
+!  
+! //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+   
++  double Galprop::DM_subs_boost(double Xkpc, double Ykpc, double Zkpc)
++   {
++     double R = sqrt(Xkpc*Xkpc+Ykpc*Ykpc+Zkpc*Zkpc);
++     int boost_key = galdef.DM_int3;  //switch boost on/off
++       switch(boost_key)
++        {
++          case 0: return(1.);  //no boost
++ 
++          case 1: return(1.00254+0.0481409*R-0.00568977*pow(R,2.)+0.0012815*pow(R,3.)-0.0000601459*pow(R,4.)+1.78452e-6*pow(R,5.)-2.69758e-8*pow(R,6.)+2.02793e-10*pow(R,7.)-5.97113e-13*pow(R,8.)); //polynomial fit of B(r)
++ 
++        }
++   }
++ 
+diff -c /home/egorov/Desktop/GP/galprop_54_r2766/source/gen_synch_skymap.cc /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/gen_synch_skymap.cc
+*** /home/egorov/Desktop/GP/galprop_54_r2766/source/gen_synch_skymap.cc	2013-10-09 07:28:18.000000000 -0700
+--- /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/gen_synch_skymap.cc	2016-04-18 06:13:00.000000000 -0700
+***************
+*** 168,173 ****
+--- 168,174 ----
+                    yy=fabs(yy);
+                    zz=fabs(zz);
+                 }
++ 
+                 ix=(int)((xx-galaxy.x_min)/galaxy.dx + 0.5);//IMOS20060420
+                 iy=(int)((yy-galaxy.y_min)/galaxy.dy + 0.5);//IMOS20060420
+                 iz=(int)((zz-galaxy.z_min)/galaxy.dz + 0.5);//IMOS20060420
+***************
+*** 245,256 ****
+        
+        if(gcr[0].n_spatial_dimensions==2)
+  	{
+  	  ir=(int)((RR-galaxy.r_min)/galaxy.dr + 0.5);//IMOS20060420
+! 	  if(ir>galaxy.n_rgrid-1) { complete=1; ir=galaxy.n_rgrid-1; }
+! 	  iz=(int)((zz-galaxy.z_min)/galaxy.dz + 0.5);//IMOS20060420
+! 	  if(iz<0               ) { complete=1; iz=0;                } 
+! 	  if(iz>galaxy.n_zgrid-1) { complete=1; iz=galaxy.n_zgrid-1; }
+! 	  // cout<<"d RR zz ir iz "<<d<<" "<<RR<<" "<<zz<<" "<<ir<<" "<<iz<<endl;
+  	} // particle.n_spatial_dimensions==2
+        
+        if(gcr[0].n_spatial_dimensions==3)
+--- 246,259 ----
+        
+        if(gcr[0].n_spatial_dimensions==2)
+  	{
++ 	  if(RR>galaxy.r_max) {complete=1; continue; }  //AE20160417
++ 	  if(zz<galaxy.z_min || zz>galaxy.z_max) {complete=1; continue; }  //AE20160417
+  	  ir=(int)((RR-galaxy.r_min)/galaxy.dr + 0.5);//IMOS20060420
+! 	  // if(ir>galaxy.n_rgrid-1) { complete=1; ir=galaxy.n_rgrid-1; }
+!           iz=(int)((zz-galaxy.z_min)/galaxy.dz + 0.5);//IMOS20060420
+! 	  // if(iz<0               ) { complete=1; iz=0;                } 
+! 	  // if(iz>galaxy.n_zgrid-1) { complete=1; iz=galaxy.n_zgrid-1; }
+!           // cout<<"d RR zz ir iz "<<d<<" "<<RR<<" "<<zz<<" "<<ir<<" "<<iz<<endl;
+  	} // particle.n_spatial_dimensions==2
+        
+        if(gcr[0].n_spatial_dimensions==3)
+***************
+*** 272,288 ****
+                    yy=fabs(yy);
+                    zz=fabs(zz);
+                 }
+                 ix=(int)((xx-galaxy.x_min)/galaxy.dx + 0.5);//IMOS20060420
+                 iy=(int)((yy-galaxy.y_min)/galaxy.dy + 0.5);//IMOS20060420
+                 iz=(int)((zz-galaxy.z_min)/galaxy.dz + 0.5);//IMOS20060420
+  
+!                if(ix<0               ) { complete=1; ix=0;                }
+                 if(iy<0               ) { complete=1; iy=0;                }  
+                 if(iz<0               ) { complete=1; iz=0;                } 
+                 if(ix>galaxy.n_xgrid-1) { complete=1; ix=galaxy.n_xgrid-1; }
+                 if(iy>galaxy.n_ygrid-1) { complete=1; iy=galaxy.n_ygrid-1; }
+!                if(iz>galaxy.n_zgrid-1) { complete=1; iz=galaxy.n_zgrid-1; }
+! //  cout<<"d RR xx yy zz ix iy iz "<<d<<" "<<RR<<" "<<xx<<" "<<yy<<" "<<zz<<" "<<ix<<" "<<iy<<" "<<iz<<endl;
+              } // particle.n_spatial_dimensions==3
+  
+  
+--- 275,296 ----
+                    yy=fabs(yy);
+                    zz=fabs(zz);
+                 }
++ 
++                 if(xx<galaxy.x_min || xx>galaxy.x_max || yy<galaxy.y_min || yy>galaxy.y_max || zz<galaxy.z_min || zz>galaxy.z_max) 
++                    {complete=1; continue;}    //AE20160417 - new complete condition instead of the one below
++ 
+                 ix=(int)((xx-galaxy.x_min)/galaxy.dx + 0.5);//IMOS20060420
+                 iy=(int)((yy-galaxy.y_min)/galaxy.dy + 0.5);//IMOS20060420
+                 iz=(int)((zz-galaxy.z_min)/galaxy.dz + 0.5);//IMOS20060420
+  
+!                /*  if(ix<0               ) { complete=1; ix=0;                }
+                 if(iy<0               ) { complete=1; iy=0;                }  
+                 if(iz<0               ) { complete=1; iz=0;                } 
+                 if(ix>galaxy.n_xgrid-1) { complete=1; ix=galaxy.n_xgrid-1; }
+                 if(iy>galaxy.n_ygrid-1) { complete=1; iy=galaxy.n_ygrid-1; }
+!                if(iz>galaxy.n_zgrid-1) { complete=1; iz=galaxy.n_zgrid-1; }   */
+! 
+! 	//  cout<<"d RR xx yy zz ix iy iz "<<d<<" "<<RR<<" "<<xx<<" "<<yy<<" "<<zz<<" "<<ix<<" "<<iy<<" "<<iz<<endl;
+              } // particle.n_spatial_dimensions==3
+  
+  
+***************
+*** 386,394 ****
+                 U        [inusynch] += deltaU;
+                 free_free[inusynch] += delta_free_free;       //AWS20110905
+  
+              }//inusynch
+  
+!          }//complete==0
+  
+  	return 0;
+  }
+--- 394,404 ----
+                 U        [inusynch] += deltaU;
+                 free_free[inusynch] += delta_free_free;       //AWS20110905
+  
++                // if(l==0.0 && b>29. && b<31.) cout<<"xx="<<xx<<" yy="<<yy<<" zz="<<zz<<" delta="<<delta<<endl;
++                
+              }//inusynch
+  
+!          }//complete==0  
+  
+  	return 0;
+  }
+***************
+*** 446,452 ****
+  
+  
+  	  double r  = w1  +  (w2-w1)  *(z-z1)/dz;//   at x,y,z
+! 
+            if(debug==1)
+  	  {
+  	      cout    <<endl<<"interpDistribution:"<<endl;
+--- 456,463 ----
+  
+  
+  	  double r  = w1  +  (w2-w1)  *(z-z1)/dz;//   at x,y,z
+!           // double r = 1/(dx*dy*dz)*(v1*(x1+dx-x)*(y1+dy-y)*(z1+dz-z)+v5*(x1+dx-x)*(y1+dy-y)*(z-z1)+v3*(x1+dx-x)*(y-y1)*(z1+dz-z)+v7*(x1+dx-x)*(y-y1)*(z-z1)+v2*(x-x1)*(y1+dy-y)*(z1+dz-z)+v6*(x-x1)*(y1+dy-y)*(z-z1)+v4*(x-x1)*(y-y1)*(z1+dz-z)+v8*(x-x1)*(y-y1)*(z-z1));      
+! 	 
+            if(debug==1)
+  	  {
+  	      cout    <<endl<<"interpDistribution:"<<endl;
+diff -c /home/egorov/Desktop/GP/galprop_54_r2766/source/read_isrf.cc /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/read_isrf.cc
+*** /home/egorov/Desktop/GP/galprop_54_r2766/source/read_isrf.cc	2013-10-09 07:28:18.000000000 -0700
+--- /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/read_isrf.cc	2016-04-14 10:27:41.000000000 -0700
+***************
+*** 806,811 ****
+--- 806,812 ----
+      iBuf << "galaxy.ISRF initialised with frequency axis dimension = " << targetBins;
+      INFO(iBuf.str());
+       
++ #pragma omp parallel for schedule(dynamic) default(shared)   //AE20140219
+      for (int i = 0; i < galaxy.n_xgrid; ++i) {
+        
+        for (int j = 0; j < galaxy.n_ygrid; ++j) {
+Common subdirectories: /home/egorov/Desktop/GP/galprop_54_r2766/source/.svn and /home/egorov/Desktop/GP/github/galprop_54_r2766_DM/source/.svn
