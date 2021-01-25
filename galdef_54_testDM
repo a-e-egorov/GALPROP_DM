@@ -14,7 +14,8 @@ DM_double1           = 0.17   scale density of the DM profile, GeV cm^-3
 
 
 DM_double0           = 23    scale radius of the DM density profile, kpc
-DM_double8           = 4.2e-10   truncation radius for the NFW profile, below which the DM density stays constant, kpc (must be greater than 0!)
+DM_double8           = 0.05  truncation radius for the NFW profile, below which the DM density stays constant, kpc. It's strictly NOT recommended to set it lower than ~0.01 kpc, since the gNFW profile steeply
+                             blows up near the central point, which may lead to unphysical source term value in the central cell; DM numerical simulations anyway don't resolve anything below such a limit.
 
 DM_double7           = 0.17   \alpha parameter for the Einasto DM density profile
 
