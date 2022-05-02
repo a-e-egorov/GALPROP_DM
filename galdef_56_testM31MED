@@ -1,0 +1,493 @@
+#Title               = example of DM run for M31 for MED DM density, MF and prop. parameters
+
+# DARK MATTER and other var =====================================================
+ 
+DM_double2           = 100   DM particle mass, GeV - must be in [5..100000] AND > rest mass of the primary products (DM_int2)
+DM_double9           = 2e-26  DM thermally averaged annihilation cross section, cm^3 s^-1
+DM_int2              = 6    DM annihilation channel: 1=e^+e^-, 2=\mu^+\mu^-,3=\tau^+\tau^-,4=qq*, 5=cc*, 6=bb*, 7=tt*, 8=\gamma\gamma, 9=gg, 10=W^+W^-, 11=ZZ, 12=hh
+
+DM_int0              = 0    DM density profile (according to PPPC): 0=generalized NFW, 1=Isothermal, 2=Einasto, 3=Burkert, 9=DarkSUSY
+DM_double6           = 1.0    \gamma parameter for the generalized NFW profile (1.0 gives the canonical NFW)
+DM_double1           = 0.585   scale density of the DM profile, GeV cm^-3
+DM_double0           = 10.4    scale radius of the DM density profile, kpc
+DM_double8           = 0.01   truncation radius for the NFW profile, below which the DM density stays constant, kpc (must be >0!)
+DM_double7           = 0.73   \alpha parameter for the Einasto DM density profile
+DM_int3              = 0    Substructure presense: 0=no, 1=based on Kamionkowski et al., Phys.Rev.D 81, 043532 (2010).
+
+ISRF_factors         = 2.0,0.1,1.0         ISRF factors for IC calculation: optical, FIR, CMB
+
+DM_int9              = 8   0=fixed increment synchrotron frequency grid, >0=# of arbitrary frequencies (DM_double3)
+DM_double3           = 0.074e9,0.147e9,0.34e9,1.5e9,2.6e9,4.9e9,6.6e9,8.4e9      list of arbitrary synchrotron frequencies (Hz)
+
+cameraLocation       = 48.0631,0,13.7819    33.6,0,9.65  #Specifies the camera location in x,y,z.  Sun is at positive x.
+healpix_order        = 10      #order for healpix skymaps.  7 gives ~0.5 deg and it changes by an order of 2
+DM_double4           = 0.03     central electrons' density in cm^-3 
+
+HII_Te               = 7000  free electron temperature (K) for free-free absorption
+HII_clumping_factor  = 21    free electron clumping factor for free-free absorption
+
+DM_int4              = 1    1=doubles lepton source function (0=no) in order to save comp. time by propagating only one specie; if turned on, requires either one of DM_positrons or DM_electrons to be 0; should be a good approximation
+DM_positrons         = 0   1=compute DM positrons
+DM_electrons         = 1   1=compute DM electrons
+DM_antiprotons       = 0   1=compute DM antiprotons
+DM_gammas            = 0   1=compute DM gammas
+
+DM_int8              = 1    not used
+DM_int5              = 1    
+DM_int6              = 1
+DM_int7              = 1
+DM_int1              = 1    9=DarkSUSY DM source  
+DM_double5           = 40.  
+
+gamma_rays           = 0    1=compute gamma rays, 2=compute HI,H2 skymaps separately
+pi0_decay            = 0    1= old formalism 2=Blattnig et al. 3=Kamae et al.
+IC_isotropic         = 0    1,2= compute isotropic IC: 1=compute full, 2=store skymap components
+IC_anisotropic       = 0    1,2,3= compute anisotropic IC: 1=full, 2=approx., 3=isotropic
+bremss               = 0    1=compute bremsstrahlung
+synchrotron          = 2    2,3=compute synchrotron using B_field_model and B_field_parameters. 2=total only, 3=all Stokes
+free_free_absorption = 1    0= no absorption 1= free-free absorption
+
+# MAGNETIC FIELD ================================================
+
+B_field_name         = M31-MED   3D models:han ..galprop_original: exponential model as in original (parameters Bo, rscale, zscale)
+#                       B0       R-    z-scale 
+B_field_parameters   = 6.0e-6,  4.0,  1.2  ,   0.0,0.0,0.0,0.0,0.0,0.0,0.0     parameters for 3D models galprop_original
+
+# PROPAGATION ===================================================
+
+z_min                = -2.7   min z, kpc 
+z_max                = +2.7   max z, kpc 
+
+D0_xx                = 6e27  diffusion coefficient in x at reference rigidity in cm^2/s
+D_g_1                = 0.45    diffusion coefficient index below reference rigidity
+D_g_2                = 0.45    diffusion coefficient index above reference rigidity
+D_rigid_ref          = 1.0e3    #Reference rigidity for normalization
+D_rigid_br           = 1.0e3    reference rigidity for diffusion coefficient in MV
+D_eta                = -2       #Exponent on the beta multiplication for D0_xx, defaults to 1
+
+diff_reacc           = 0         0=no reacc.; 1,2=incl.diff.reacc.; -1==beta^3 Dxx; 11=Kolmogorov+damping; 12=Kraichnan+damping
+v_Alfven             = 5.0      Alfven speed in km s^-1
+
+#Spatially dependent diffusion
+B_dep_diffusion      =0        #Link D0_xx and v_Alfven to the magnetic field model
+D_xx_max             =1e30     #Maximum diffusion coefficient at 10 GV, used when B_dep_diffusion = 1
+D_xx_min             =1e26     #Minimum diffusion coefficient at 10 GV, used when B_dep_diffusion = 1
+
+#Reduction of diffusion in the plane
+Dxx_plane_scale        =-1     #Multiply the Dxx value in the plane with this value.  Ignored if negative
+Dxx_plane_scale_height =0.2    #Scale height for the normalization
+
+#Used in damping only
+#damping_p0           = 1.e6    #MV -some rigidity (where CR density is low)
+#damping_const_G      = 0.02    #a const derived from fitting B/C
+#damping_const_K      = 0.1     #a const derived from fitting B/C
+#damping_max_path_L   = 3.e21   #Lmax~1 kpc, max free path
+
+convection            = 0        #1=include convection
+v0_conv               = 0.       #km s-1        v_conv=v0_conv+dvdz_conv*dz   
+dvdz_conv             = 10.      #km s-1 kpc-1  v_conv=v0_conv+dvdz_conv*dz
+
+output_gcr_full       = 0  #output full galactic cosmic ray array
+
+# ================================================================
+
+n_spatial_dimensions = 2
+
+dz                   = 0.05    delta z, kpc
+dr                   = 0.05    delta r
+
+r_min                = 0.0    min r 
+r_max                = 15     max r 
+
+x_min                = -15   min x 
+x_max                = +15   max x 
+dx                   = 0.2   delta x
+y_min                = -15   min y 
+y_max                = +15   max y 
+dy                   = 0.2   delta y
+
+p_Ekin_grid          = Ekin         p||Ekin alignment 
+
+#p_min               = 1000    min momentum (MV)
+#p_max               = 4000    max momentum  
+#p_factor            = 1.50    momentum factor
+
+Ekin_min             = 10    min kinetic energy per nucleon (MeV); not only the region of interest must be covered, but also the region of production
+Ekin_max             = 1.2e5  max kinetic energy per nucleon (MeV); not only the region of interest must be covered, but also the region of production
+Ekin_factor          = 1.04    kinetic energy per nucleon grid factor
+
+E_gamma_min          = 1.   min gamma-ray energy (MeV)
+E_gamma_max          = 1000.   max gamma-ray energy (MeV)
+E_gamma_factor       = 3.0           gamma-ray energy factor
+integration_mode     = 0       integr.over part.spec.: =1-old E*logE; =0-PL analyt.  (0 is recommended)
+
+nu_synch_min         = 28.0e9   min synchrotron frequency (Hz)
+nu_synch_max         = 29.0e9  max synchrotron frequency (Hz)
+nu_synch_factor      = 1.5         synchrotron frequency factor
+
+skymap_format        = 3  #fitsfile format: 0=old format (the default), 1=mapcube for glast science tools, 2=both, 3=healpix
+anisoHealpixOrder    = 1  #Specifies the order in which to calculate the aniso/iso IC calculation.  This map is then interpolated to the output order
+
+#Specify los integration mode
+los_integration_mode = 1      #0 - old fixed step size code without interpolation in all but IC
+                              #1 - new code with variable step size and interpolation.
+LoS_step             = 0.01   #kpc, Line of Sight (LoS) integration step for mode 0, inital step for mode 1
+                              #This should be a small number for improved accuracy and stability of los_integration_mode 1
+#Following options only for los_integration_mode 0
+lat_substep_number   = 1      #latitude bin splitting (0,1=no split, 2=split in 2...)
+LoS_substep_number   = 1      #number of substeps per LoS integration step (0,1=no substeps)
+#This option only for los_integration_mode 1
+los_integration_accuracy = 1e-3  #Relative accuracy for the integration
+LoS_minStep          = 1e-4      # Minimum step size
+
+
+He_H_ratio           = 0.1      He/H of ISM, by number
+n_X_CO               = 9        #an option to select functional dependence of X_CO=X_CO(R)  
+                                #0=constant as below, 
+                                #1=tabulated values with linear interpolation using X_CO_radius and X_CO_values
+                                #2=exponential function with a constant and a linear term X_CO = X0 + X1*r + X2*10**(X3*r).  Xi retrieved from X_CO_parameters below
+                                #3=tabulated values with power-law interpolation using X_CO_radius and X_CO_values
+                                #9=standard variation as in A&A 2004 paper 
+                                #10=an exponential function X_CO = 1e20 * 10**(a + b*r) with a = -0.4 and b = 0.066.  Fixed above r=15kpc
+X_CO                 = 1.9E20  conversion factor from CO integrated temperature to H2 column density, n_X_CO = 0 only
+X_CO_parameters      = 1e20, 1.5, 0.1, 5e-2 #comma separated list of values for n_X_CO = 2
+#Tabulated values for n_X_CO = 1 and 3.  Should be same size
+#X_CO_values         = 1e19, 1e20, 2e20, 1e20, 5e20 
+#X_CO_radius         = 0,    3,    5,    9,    20   #in kpc
+
+nHI_model            = 4 #selection of HI  gas density model 1=old incorrect model, 2=standard model, 9=XML model
+nH2_model            = 4 #selection of H2  gas density model 1=old incorrect model, 2=standard model, 9=XML model
+nHII_model           = 4 #selection of HII gas density model 1=Cordes et al  1991 2, 3 = other models, 9=XML model
+HI_xmlFilename       = path #path to a xml file that describes the HI gas model using libgalstruct
+H2_xmlFilename       = path #path to a xml file that describes the CO gas model using libgalstruct
+HII_xmlFilename      = path #path to a xml file that describes the HII gas model using libgalstruct
+
+#The annuli are only used for gamma-ray output
+COR_filename         =       #rbands_co10mm_v3_2001_hdeg.fits.gz                   #CO gas annuli, not used if empty
+HIR_filename         =       #rbands_hi12_v5_hdeg_zmax1_Ts125.fits.gz              #HI gas annuli, not used if empty
+
+#ISRF, used in both energy losses and Inverse Compton calculation
+ISRF_file            = FITS/ISRF/Standard/Standard.dat      #input ISRF file  THIS IS THE ONE FOR ANISOTROPIC IC
+ISRF_filetype        = 3    0=CMB only,1=obsolete, 2=standard FITS, 3=healpix with angular dependence
+ISRF_healpixOrder    = 3    #for aniso IC calculation, specifies the IRFS skymap order
+
+fragmentation        = 0        1=include fragmentation
+momentum_losses      = 1        1=include momentum losses
+radioactive_decay    = 0        1=include radioactive decay
+K_capture            = 0        1=include K-capture
+ionization_rate      = 0        1=compute ionization rate
+ionization_losses    = 1        #To turn off ionization energy losses
+coulomb_losses       = 1        #To turn off coulomb energy losses
+bremss_losses        = 1        #To turn off bremsstrahlung energy losses
+IC_losses            = 1        #To turn off inverse Compton energy losses
+sync_losses          = 1        #To turn off synchrotron energy losses
+
+primary_electrons    = 0    1=compute primary electrons
+primary_positrons    = 0    1=compute primary positrons
+secondary_electrons  = 0    1=compute secondary electrons
+secondary_positrons  = 0    1=compute secondary positrons
+knock_on_electrons   = 0    1,2 1=compute knock-on electrons (p,He) 2= use factor 1.75 to scale pp,pHe
+pairproduction       = 0    1=compute pair production on ISRF and also absorption if los_integration_mode = 1
+secondary_antiproton = 0    1,2= calculate: 1=uses nuclear scaling; 2=uses nuclear factors (Simon et al 1998)   
+tertiary_antiproton  = 0    1=compute tertiary antiprotons                                                      
+secondary_protons    = 0    1=compute secondary protons
+globalLuminosities   = 0    1=compute global luminosities, 0=don't (default) 
+
+# Solution settings
+start_timestep       = 2.0e8 
+  end_timestep       = 1.0e1
+timestep_factor      = 0.5         
+timestep_repeat      = 100  number of repeats per timestep in  timetep_mode=1 - must be integer! - this set gives about 2500 steps in total
+timestep_repeat2     = 0    number of timesteps in timetep_mode=2
+timestep_print       = 1000000000  number of timesteps between printings
+timestep_diagnostics = 100  number of timesteps between diagnostics
+control_diagnostics  = 0     control detail of diagnostics
+solution_method      = 1     1 Crank-Nicolson, 2,21: fully explicit in time, 4 vectorized Crank-Nicolson
+solution_convergence = 1     1=use convergence test
+
+prop_r               = 1  1=propagate in r (2D)
+prop_x               = 1  1=propagate in x (2D,3D)
+prop_y               = 1  1=propagate in y (3D)
+prop_z               = 1  1=propagate in z (3D)
+prop_p               = 1  1=propagate in momentum
+
+
+#----------------------
+# CR source distribution
+#
+# There is a new way to specify the CR source distribution that allows for many
+# different source distributions in a single galprop run.  The distributions are
+# configured in their own configuration files that are then specified with the
+# following option.  The code looks for the files in the current directory and
+# the GALDEF directory.  Full paths are also accepted.  Many files can be added.
+#
+# Relative normalization between the different source classes is important.
+# Primary positron sources are normalized with electrons, everything else is
+# normalized with the protons.
+# If this variable is empty we use the options described below to specify the CR 
+# source distribution.
+
+#source_class_files = exampleSourceClass.txt
+
+#Old options used only if source_class_files is empty
+
+## ---- Start old values ----
+
+source_normalization = 1       #Normalization parameter to control the nuclei flux if proton_norm_flux is 0
+electron_source_normalization = 1 #Normalization parameter to control the electron flux if electron_norm_flux is 0
+
+#Should be 0.  other values limit the distribution in various ways.
+source_specification = 0  #2D:: 1:r,z=0; 2:z=0;  3D:: 1:x,y,z=0; 2:z=0; 3:x=0; 4:y=0
+
+#Which distribution type to use.  1 is the most common.
+source_model         = 1  #0=zero 
+                          #1=parameterized f(r) = ((r+sp5)/(rsun+sp5))**sp1 * exp(-sp2*(r-rsun)/(rsun+sp5)), 0 for r > sp3, constant for r > sp4  
+                          #2=Case&B 
+                          #3=pulsars 
+                          #5=S&Mattox 
+                          #6=S&Mattox with cutoff 
+                          #7=Gaussian sp1 is mean of Gaussian in kcp, sp2 is sigma of gaussian.  0 for r > sp3, constant for r > sp4
+                          #8=Tabulated values from source_values and source_radius
+                          #9=Use total gas distribution nHI + 2nH2
+                          #10=Use H2 gas distribution only
+                          #11=Use HII gas distribution
+                          #12=NE2001 distribution with arms and GC component
+                          #13= bulge + thin disk from ISRF
+                          #14=model 1 + ellipsoid centred on GC
+                          #15=read in the model from an libgalstruct compatible XML file
+source_parameters_0  = 0.2      #Gives zscale for models 1 through 8; disc density for 13 and bulge density for 14
+source_parameters_1  = 0.475063 #model 1:alpha  model 7: Gaussian mean,  kpc from GC, model 13: disc R scale, model 14: bulgeA
+source_parameters_2  = 2.16570  #model 1:beta   model 7: Gaussian width, kpc, model 13: disc Z scale, model 14: bulgeB
+source_parameters_3  = 15.0     #model 1, 7 :rmax:   set to zero beyond this radius, kpc from GC, model 13: bulge density, model 14: bulgeScaleLength
+source_parameters_4  = 10.0     #model 1, 7: rconst: set to value at rconst for rconst<r<rmax, kpc from GC, model 13: bulgeA, model 14: alpha
+source_parameters_5  = 0.0      #model 1: offset for function, model 13: bulgeB, model 14: beta
+source_parameters_6  = 0.0      #model 13: bulgeScaleLength, model 14: rmax
+source_parameters_7  = 0.0      #model 13: bulgeIndex, model 14: rconst
+source_parameters_8  = 0.0      #model 13: phiOffset in degrees, model 14: roff
+source_parameters_9  = 0.0      #model 14: zscale
+
+#Electrons can have a different distribution.  Defaults to the source_model if not specified.
+source_model_elec    = 1       #source model for electrons (parameter values default to nuclei values if they are absent), please see documentation above
+source_pars_elec_0  = 0.2      #Gives zscale for models 1 through 8; disc density for 13 and bulge density for 14
+source_pars_elec_1  = 0.475063 #model 1:alpha  model 7: Gaussian mean,  kpc from GC, model 13: disc R scale, model 14: bulgeA
+source_pars_elec_2  = 2.16570  #model 1:beta   model 7: Gaussian width, kpc, model 13: disc Z scale, model 14: bulgeB
+source_pars_elec_3  = 15.0     #model 1, 7 :rmax:   set to zero beyond this radius, kpc from GC, model 13: bulge density, model 14: bulgeScaleLength
+source_pars_elec_4  = 10.0     #model 1, 7: rconst: set to value at rconst for rconst<r<rmax, kpc from GC, model 13: bulgeA, model 14: alpha
+source_pars_elec_5  = 0.0      #model 1: offset for function, model 13: bulgeB, model 14: beta
+source_pars_elec_6  = 0.0      #model 13: bulgeScaleLength, model 14: rmax
+source_pars_elec_7  = 0.0      #model 13: bulgeIndex, model 14: rconst
+source_pars_elec_8  = 0.0      #model 13: phiOffset in degrees, model 14: roff
+source_pars_elec_9  = 0.0      #model 14: zscale
+
+#source_xmlFile = path #Only for model 15
+
+#Linear interpolation between values.
+#source_radius        = 0,1,2,3,4,5,6,7,8,9,10,20 #model 8: radius for points for CR source distribution, kpc from GC 
+#source_values        = 2,3,4,5,6,7,6,5,4,3,02,01 #model 8: values at  points for CR source distribution
+#source_radius_electrons = 0,1,2,3,4,5,6,7,8,9,10,20 #model 8: radius for points for CR source distribution, kpc from GC 
+#source_values_electrons = 2,3,4,5,6,7,6,5,4,3,02,01 #model 8: values at  points for CR source distribution
+
+#CR point sources, not really tested.
+#We need the same number of cr_source_?_i as there are sources and the format of i has to be %02d (two numbers, zero padded below 10)
+n_cr_sources         = 0     #number of pointlike cosmic-ray sources   3D only!
+#cr_source_x_01       = 10.0  #x position of cosmic-ray source 1 (kpc)
+#cr_source_y_01       = 10.0  #y position of cosmic-ray source 1
+#cr_source_z_01       = 0.1   #z position of cosmic-ray source 1
+#cr_source_w_01       = 0.1 #sigma width  of cosmic-ray source 1
+#cr_source_L_01       = 1.0   #luminosity of cosmic-ray source 1
+#cr_source_x_02       = 3.0   #x position of cosmic-ray source 2
+#cr_source_y_02       = 4.0   #y position of cosmic-ray source 2
+#cr_source_z_02       = 0.2   #z position of cosmic-ray source 2
+#cr_source_w_02       = 2.4 #sigma width  of cosmic-ray source 2
+#cr_source_L_02       = 2.0   #luminosity of cosmic-ray source 2
+
+#Even less tested.
+SNR_events            = 0         #handle stochastic SNR events
+#SNR_interval         = 1.0e4     #time interval in years between SNR in 1 kpc^-3 volume
+#SNR_livetime         = 1.0e4     #CR-producing live-time in years of an SNR
+#SNR_electron_sdg     = 0.00      #delta electron source index Gaussian sigma
+#SNR_nuc_sdg          = 0.00      #delta nucleus  source index Gaussian sigma
+#SNR_electron_dgpivot = 5.0e3     #delta electron source index pivot rigidity (MeV)
+#SNR_nuc_dgpivot      = 5.0e3     #delta nucleus  source index pivot rigidity (MeV)
+
+#Local bubble, multplies the gas and/or CR source distribution in a radius around the Sun
+local_bubble_radius = 0
+local_bubble_gas_fraction = 1.0
+local_bubble_source_fraction = 1.0
+#---------------------
+
+#---------------------
+# Injection spectra
+
+inj_spectrum_type    = rigidity  #rigidity||beta_rig||Etot||dirac||step||expcutoff||doubleexpcutoff nucleon injection spectrum type 
+
+#Limit the source injection spectrum range.  Not the same as changing the propagation boundaries.  All limits are applied if specified so best to specify either rigidity or injection limit.
+#rigid_min            = 0       #Lower boundary for source injection spectrum in rigidity.  Defaults to 0
+#rigid_max            = 1e31    #Upper boundary for source injcetion spectrum in rigidity.  Automatically assigned to maximum double value.
+#inj_Ekin_min         = 0       #Lower boundary for source injection spectrum in kinetic energy.  Defaults to 0
+#inj_Ekin_max         = 1e31    #Upper boundary for source injcetion spectrum in kinetic energy.  Automatically assigned to maximum double value.
+
+#Default double broken power-law for nuclei, used when type is rigidity
+nuc_rigid_br0        = 10.0e3
+nuc_rigid_br         = 220e3   #reference rigidity for nucleus injection index in MV
+nuc_g_0              = 1.9     #nucleus injection index index below nuc_rigid_br0
+nuc_g_1              = 2.4     #nucleus injection index between rigidity breaks
+nuc_g_2              = 2.3     #nucleus injection index index above nuc_rigid_br
+
+#Injection spectrum can be modified for each isotope using
+#nuc_rigid_br0_ZZ_AAA = 5e3
+#nuc_rigid_br_ZZ_AAA  = 200e3
+#nuc_g_0_ZZ_AAA       = 1.8
+#nuc_g_1_ZZ_AAA       = 2.3
+#nuc_g_2_ZZ_AAA       = 2.2
+
+electron_g_0         =1.60    #electron injection index below electron_rigid_br0
+electron_rigid_br0   =4.0e3   #reference rigidity0 for electron injection index in MV
+electron_g_1         =2.42    #electron injection index below reference rigidity
+electron_rigid_br    =1.0e9   #reference rigidity for electron injection index in MV
+electron_g_2         =5.0     #electron injection index index above reference rigidity
+#----------------------------
+
+# Normalization for nuclei and electrons
+#Galprop normalizes the spectrum post-propagation to these values at the solar location.
+#All species, apart from Positrons and Electrons are normalized with respect to protons.
+#Use the isotopic abundances to set the relative normalization between elements
+proton_norm_Ekin     = 1.00e+5 #proton kinetic energy for normalization (MeV)
+proton_norm_flux     = 0       #to renorm nuclei/flux of protons at norm energy (cm^-2 sr^-1 s^-1 MeV^-1), 0 turns off normalization
+electron_norm_Ekin   = 3.45e4  #electron kinetic energy for normalization (MeV)
+electron_norm_flux   = 0       #flux of electrons at normalization energy (cm^-2 sr^-1 s^-1 MeV^-1), 0 turns off normalization
+
+# Switches for elements
+#Protons should not be switched off if proton_norm_flux is > 0
+max_Z                = 0     the largest atomic number (Z) in the nuclear reaction network
+use_Z_1              = 1
+use_Z_2              = 1
+use_Z_3              = 1
+use_Z_4              = 1
+use_Z_5              = 1
+use_Z_6              = 1
+use_Z_7              = 1
+use_Z_8              = 1
+use_Z_9              = 1
+use_Z_10             = 1 
+use_Z_11             = 1
+use_Z_12             = 1
+use_Z_13             = 1
+use_Z_14             = 1
+use_Z_15             = 1
+use_Z_16             = 1
+use_Z_17             = 1
+use_Z_18             = 1
+use_Z_19             = 1
+use_Z_20             = 1 
+use_Z_21             = 1
+use_Z_22             = 1
+use_Z_23             = 1
+use_Z_24             = 1
+use_Z_25             = 1
+use_Z_26             = 1
+use_Z_27             = 1
+use_Z_28             = 1
+use_Z_29             = 0
+use_Z_30             = 0 
+
+# Primary abundances
+#The abundance ratios are evaluated at the reference energy specified in proton_norm_Ekin
+#If normalization at the end of run is turned off (proton_norm_flux = 0), then the absolute values of the 
+#abundance matter.
+iso_abundance_01_001 = 1.06e+06   H 
+iso_abundance_01_002 =     0.     34.8    
+iso_abundance_02_003 =    9.033   He
+iso_abundance_02_004 = 7.199e+04    
+iso_abundance_03_006 =        0   Li
+iso_abundance_03_007 =        0    
+iso_abundance_04_009 =        0   Be
+iso_abundance_05_010 =        0   B 
+iso_abundance_05_011 =        0    
+iso_abundance_06_012 =     2819   C 
+iso_abundance_06_013 = 5.268e-07    
+iso_abundance_07_014 =    182.8   N 
+iso_abundance_07_015 = 5.961e-05    
+iso_abundance_08_016 =     3822   O 
+iso_abundance_08_017 = 6.713e-07    
+iso_abundance_08_018 =    1.286    
+iso_abundance_09_019 = 2.664e-08   F 
+iso_abundance_10_020 =    312.5   Ne
+iso_abundance_10_021 = 0.003556    
+iso_abundance_10_022 =    100.1    
+iso_abundance_11_023 =    22.84   Na
+iso_abundance_12_024 =    658.1   Mg
+iso_abundance_12_025 =     82.5    
+iso_abundance_12_026 =    104.7    
+iso_abundance_13_027 =    76.42   Al
+iso_abundance_14_028 =    725.7   Si
+iso_abundance_14_029 =    35.02    
+iso_abundance_14_030 =    24.68    
+iso_abundance_15_031 =    4.242   P 
+iso_abundance_16_032 =    89.12   S 
+iso_abundance_16_033 =   0.3056    
+iso_abundance_16_034 =    3.417    
+iso_abundance_16_036 = 0.0004281    
+iso_abundance_17_035 =   0.7044   Cl
+iso_abundance_17_037 = 0.001167    
+iso_abundance_18_036 =    9.829   Ar
+iso_abundance_18_038 =   0.6357    
+iso_abundance_18_040 = 0.001744    
+iso_abundance_19_039 =    1.389   K 
+iso_abundance_19_040 =    3.022    
+iso_abundance_19_041 = 0.0003339    
+iso_abundance_20_040 =    51.13   Ca
+iso_abundance_20_041 =    1.974    
+iso_abundance_20_042 = 1.134e-06    
+iso_abundance_20_043 = 2.117e-06    
+iso_abundance_20_044 = 9.928e-05    
+iso_abundance_20_048 =   0.1099    
+iso_abundance_21_045 =    1.635   Sc
+iso_abundance_22_046 =    5.558   Ti
+iso_abundance_22_047 = 8.947e-06    
+iso_abundance_22_048 = 6.05e-07    
+iso_abundance_22_049 = 5.854e-09    
+iso_abundance_22_050 = 6.083e-07    
+iso_abundance_23_050 = 1.818e-05   V 
+iso_abundance_23_051 = 5.987e-09    
+iso_abundance_24_050 =    2.873   Cr
+iso_abundance_24_052 =    8.065    
+iso_abundance_24_053 = 0.003014    
+iso_abundance_24_054 =   0.4173    
+iso_abundance_25_053 =    6.499   Mn
+iso_abundance_25_055 =    1.273    
+iso_abundance_26_054 =    49.08   Fe
+iso_abundance_26_056 =    697.7    
+iso_abundance_26_057 =    21.67    
+iso_abundance_26_058 =    3.335    
+iso_abundance_27_059 =    2.214   Co
+iso_abundance_28_058 =    28.88   Ni
+iso_abundance_28_060 =     11.9    
+iso_abundance_28_061 =   0.5992    
+iso_abundance_28_062 =    1.426    
+iso_abundance_28_064 =   0.3039
+
+# Nuclear network settings 
+#Controls how iterations over the nuclear network is handled.  network_iter_compl and network_iter_sec should not be set unless you want to test the code.  network iterations should be larger than 20 for damping
+#1 iteration should be sufficent for everything else because we now sort the network in order of dependencies.
+network_iterations    = 1  #number of iterations of protons.  Uses larger of network_iterations and network_iter_compl
+#network_iter_compl   = 1  #number of iterations of complete network, excluding secondary electrons, antiprotons, defaults to min of network_iterations and 2
+#network_iter_sec     = 1  #number of iterations calculating the secondary productions, defaults to 1.  Since the secondaries (excluding nuclei secondaries) don't generate secondaries themselves they should only be calculated once.
+total_cross_section   = 2      #total cross section option: 0=L83 1=WA96 2=BP01
+cross_section_option  = 022    #100*i+j  i=1: use Heinbach-Simon C,O->B j=kopt j=11=Webber, 21=ST
+t_half_limit          = 1.0e4  #year - lower limit on radioactive half-life for explicit inclusion
+
+
+warm_start           = 0  read in nuclei file and continue run
+
+verbose              = 0   -456 -455 -454 -453   verbosity: 0=min,10=max <0: selected debugs
+
+
+
+#only used in mapcube or old format
+long_min             = 0  gamma-ray intensity skymap longitude minimum (deg);   0 -automatic binning  required to get correct results!
+long_max             = 360  gamma-ray intensity skymap longitude maximum (deg); 360 -automatic binning
+lat_min              = -90  gamma-ray intensity skymap latitude  minimum (deg); -90 -automatic binning
+lat_max              = +90  gamma-ray intensity skymap latitude  maximum (deg); +90 -automatic binning
+d_long               = 4.0    gamma-ray intensity skymap longitude binsize (deg)
+d_lat                = 4.0    gamma-ray intensity skymap latitude  binsize (deg)
