@@ -1,0 +1,1532 @@
+Только в /home/andrei/GP/galprop_v57/source: ArmData.h
+Только в /home/andrei/GP/galprop_v57/source: AtoyAharVolkPointSource.cc
+Только в /home/andrei/GP/galprop_v57/source: AvXCO.cc
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/B_field_3D_model.cc" /home/andrei/GP/galprop_v57/source/B_field_3D_model.cc
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/B_field_3D_model.cc"	2023-03-23 13:05:36.654918651 +0300
+--- /home/andrei/GP/galprop_v57/source/B_field_3D_model.cc	2022-06-08 20:09:15.000000000 +0300
+***************
+*** 50,295 ****
+  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+- if(name == "M31-MIN")
+-   {
+-     double zscale, mf;
+-     double r=sqrt(x*x+y*y);
+-     zscale=parameters[2]; // kpc
+-     
+-    if(r<=0.4) mf = 14e-6*exp(-fabs(z)/zscale);
+-    if(r>0.4 && r<=0.8) mf = (12*r+9)*1e-6*exp(-fabs(z)/zscale);
+-    if(r>0.8 && r<=1) mf = 19e-6*exp(-fabs(z)/zscale);
+-    if(r>1 && r<=6) mf = (-2.1*r+21)*1e-6*exp(-fabs(z)/zscale);
+-    if(r>6) mf = (-0.36*r+11)*1e-6*exp(-fabs(z)/zscale);
+-  
+-    // the regular field is zero
+-    Breg =0.0;
+-    Bregx=0.0;
+-    Bregy=0.0;
+-    Bregz=0.0;
+- 
+-    Bran=mf;
+-    Branx=Bran;  // put all field in x-direction (has no significance)
+-    Brany=0.0;
+-    Branz=0.0;
+- 
+-    theta=0.0;
+-    phi  =0.0;
+-    
+-    if(parameters[9]==1) cout<<"r="<<r<<" z="<<z<<" MF="<<mf<<endl;	
+-   } //M31-MIN
+-   
+-   if(name == "M31-MED")
+-   {
+-     double zscale, mf, amf=0.42, bmf=0.14, amf1=0.84, bmf1=0.28;
+-     double r=sqrt(x*x+y*y);
+-     zscale=parameters[2]; // kpc
+-     
+-    if(r<=amf && fabs(z)<=bmf*sqrt(1-r*r/(amf*amf))) mf = 50e-6;  //центр. зона
+-    
+-    if(round(r*10)/10==0.0 && round(fabs(z)*100)/100==0.15) mf = 47e-6; //переходная зона
+-    if(round(r*10)/10==0.0 && round(fabs(z)*100)/100==0.20) mf = 34e-6;
+-    if(round(r*10)/10==0.0 && round(fabs(z)*100)/100==0.25) mf = 21e-6;
+-    if(round(r*100)/100==0.05 && round(fabs(z)*100)/100==0.15) mf = 47e-6;
+-    if(round(r*100)/100==0.05 && round(fabs(z)*100)/100==0.20) mf = 34e-6;
+-    if(round(r*100)/100==0.05 && round(fabs(z)*100)/100==0.25) mf = 21e-6;
+-    if(round(r*10)/10==0.1 && round(fabs(z)*100)/100==0.15) mf = 46e-6;
+-    if(round(r*10)/10==0.1 && round(fabs(z)*100)/100==0.20) mf = 34e-6;
+-    if(round(r*10)/10==0.1 && round(fabs(z)*100)/100==0.25) mf = 21e-6;
+-    if(round(r*100)/100==0.15 && round(fabs(z)*100)/100==0.15) mf = 45e-6;
+-    if(round(r*100)/100==0.15 && round(fabs(z)*100)/100==0.20) mf = 33e-6;
+-    if(round(r*100)/100==0.15 && round(fabs(z)*100)/100==0.25) mf = 20e-6;
+-    if(round(r*10)/10==0.2 && round(fabs(z)*100)/100==0.15) mf = 43e-6;
+-    if(round(r*10)/10==0.2 && round(fabs(z)*100)/100==0.20) mf = 31e-6;
+-    if(round(r*10)/10==0.2 && round(fabs(z)*100)/100==0.25) mf = 19e-6;
+-    if(round(r*100)/100==0.25 && round(fabs(z)*100)/100==0.15) mf = 41e-6;
+-    if(round(r*100)/100==0.25 && round(fabs(z)*100)/100==0.20) mf = 30e-6;
+-    if(round(r*100)/100==0.25 && round(fabs(z)*100)/100==0.25) mf = 18e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.10) mf = 50e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.15) mf = 39e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.20) mf = 28e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.25) mf = 16e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.10) mf = 46e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.15) mf = 36e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.20) mf = 25e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.25) mf = 15e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.05) mf = 49e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.10) mf = 41e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.15) mf = 33e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.20) mf = 23e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.00) mf = 48e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.05) mf = 43e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.10) mf = 37e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.15) mf = 29e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.20) mf = 21e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.00) mf = 44e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.05) mf = 38e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.10) mf = 33e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.15) mf = 26e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.20) mf = 19e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.00) mf = 41e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.05) mf = 34e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.10) mf = 29e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.15) mf = 24e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.20) mf = 17e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.00) mf = 37e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.05) mf = 31e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.10) mf = 27e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.15) mf = 21e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.00) mf = 34e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.05) mf = 28e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.10) mf = 24e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.15) mf = 19e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.00) mf = 30e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.05) mf = 26e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.10) mf = 22e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.15) mf = 17e-6;
+-    if(round(r*100)/100==0.75 && round(fabs(z)*100)/100==0.00) mf = 27e-6;
+-    if(round(r*100)/100==0.75 && round(fabs(z)*100)/100==0.05) mf = 23e-6;
+-    if(round(r*100)/100==0.75 && round(fabs(z)*100)/100==0.10) mf = 20e-6;
+-    if(round(r*10)/10==0.8 && round(fabs(z)*100)/100==0.00) mf = 23e-6;
+-    if(round(r*10)/10==0.8 && round(fabs(z)*100)/100==0.05) mf = 21e-6;                                                  
+-    
+-    if(r<=amf && fabs(z)>=bmf1*sqrt(1-r*r/(amf1*amf1))) mf = 17e-6*exp(-fabs(z)/zscale);  //внешняя зона  
+-    if(r>amf && r<amf1 && fabs(z)>=bmf1*sqrt(1-r*r/(amf1*amf1))) mf = (9.1*r+13)*1e-6*exp(-fabs(z)/zscale);
+-    if(r>=amf1 && r<=1) mf = 21e-6*exp(-fabs(z)/zscale);
+-    if(r>1 && r<=6) mf = (-2.4*r+23)*1e-6*exp(-fabs(z)/zscale);
+-    if(r>6) mf = (-0.27*r+11)*1e-6*exp(-fabs(z)/zscale);
+-  
+-    // the regular field is zero
+-    Breg =0.0;
+-    Bregx=0.0;
+-    Bregy=0.0;
+-    Bregz=0.0;
+- 
+-    Bran=mf;
+-    Branx=Bran;  // put all field in x-direction (has no significance)
+-    Brany=0.0;
+-    Branz=0.0;
+- 
+-    theta=0.0;
+-    phi  =0.0;
+-    
+-    if(parameters[9]==1) cout<<"r="<<r<<" z="<<z<<" MF="<<mf<<endl;
+-   } //M31-MED
+-   
+-   if(name == "M31-MAX")
+-   {
+-     double zscale, mf, amf=0.42, bmf=0.14, amf1=0.84, bmf1=0.28;
+-     double r=sqrt(x*x+y*y);
+-     zscale=parameters[2]; // kpc
+-     
+-    if(r<=amf && fabs(z)<=bmf*sqrt(1-r*r/(amf*amf))) mf = 100e-6;  //центр. зона
+-    
+-    if(round(r*10)/10==0.0 && round(fabs(z)*100)/100==0.15) mf = 94e-6; //переходная зона
+-    if(round(r*10)/10==0.0 && round(fabs(z)*100)/100==0.20) mf = 64e-6;
+-    if(round(r*10)/10==0.0 && round(fabs(z)*100)/100==0.25) mf = 35e-6;
+-    if(round(r*100)/100==0.05 && round(fabs(z)*100)/100==0.15) mf = 93e-6;
+-    if(round(r*100)/100==0.05 && round(fabs(z)*100)/100==0.20) mf = 64e-6;
+-    if(round(r*100)/100==0.05 && round(fabs(z)*100)/100==0.25) mf = 34e-6;
+-    if(round(r*10)/10==0.1 && round(fabs(z)*100)/100==0.15) mf = 92e-6;
+-    if(round(r*10)/10==0.1 && round(fabs(z)*100)/100==0.20) mf = 62e-6;
+-    if(round(r*10)/10==0.1 && round(fabs(z)*100)/100==0.25) mf = 33e-6;
+-    if(round(r*100)/100==0.15 && round(fabs(z)*100)/100==0.15) mf = 89e-6;
+-    if(round(r*100)/100==0.15 && round(fabs(z)*100)/100==0.20) mf = 60e-6;
+-    if(round(r*100)/100==0.15 && round(fabs(z)*100)/100==0.25) mf = 31e-6;
+-    if(round(r*10)/10==0.2 && round(fabs(z)*100)/100==0.15) mf = 85e-6;
+-    if(round(r*10)/10==0.2 && round(fabs(z)*100)/100==0.20) mf = 57e-6;
+-    if(round(r*10)/10==0.2 && round(fabs(z)*100)/100==0.25) mf = 29e-6;
+-    if(round(r*100)/100==0.25 && round(fabs(z)*100)/100==0.15) mf = 80e-6;
+-    if(round(r*100)/100==0.25 && round(fabs(z)*100)/100==0.20) mf = 53e-6;
+-    if(round(r*100)/100==0.25 && round(fabs(z)*100)/100==0.25) mf = 26e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.10) mf = 99e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.15) mf = 74e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.20) mf = 49e-6;
+-    if(round(r*10)/10==0.3 && round(fabs(z)*100)/100==0.25) mf = 23e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.10) mf = 90e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.15) mf = 68e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.20) mf = 44e-6;
+-    if(round(r*100)/100==0.35 && round(fabs(z)*100)/100==0.25) mf = 19e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.05) mf = 98e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.10) mf = 80e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.15) mf = 60e-6;
+-    if(round(r*10)/10==0.4 && round(fabs(z)*100)/100==0.20) mf = 38e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.00) mf = 95e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.05) mf = 84e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.10) mf = 70e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.15) mf = 53e-6;
+-    if(round(r*100)/100==0.45 && round(fabs(z)*100)/100==0.20) mf = 33e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.00) mf = 85e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.05) mf = 72e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.10) mf = 60e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.15) mf = 45e-6;
+-    if(round(r*10)/10==0.5 && round(fabs(z)*100)/100==0.20) mf = 28e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.00) mf = 76e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.05) mf = 62e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.10) mf = 52e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.15) mf = 39e-6;
+-    if(round(r*100)/100==0.55 && round(fabs(z)*100)/100==0.20) mf = 23e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.00) mf = 67e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.05) mf = 54e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.10) mf = 44e-6;
+-    if(round(r*10)/10==0.6 && round(fabs(z)*100)/100==0.15) mf = 32e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.00) mf = 58e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.05) mf = 47e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.10) mf = 38e-6;
+-    if(round(r*100)/100==0.65 && round(fabs(z)*100)/100==0.15) mf = 27e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.00) mf = 49e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.05) mf = 40e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.10) mf = 32e-6;
+-    if(round(r*10)/10==0.7 && round(fabs(z)*100)/100==0.15) mf = 22e-6;
+-    if(round(r*100)/100==0.75 && round(fabs(z)*100)/100==0.00) mf = 40e-6;
+-    if(round(r*100)/100==0.75 && round(fabs(z)*100)/100==0.05) mf = 34e-6;
+-    if(round(r*100)/100==0.75 && round(fabs(z)*100)/100==0.10) mf = 26e-6;
+-    if(round(r*10)/10==0.8 && round(fabs(z)*100)/100==0.00) mf = 31e-6;
+-    if(round(r*10)/10==0.8 && round(fabs(z)*100)/100==0.05) mf = 27e-6;                                                  
+-    
+-    if(r<=amf && fabs(z)>=bmf1*sqrt(1-r*r/(amf1*amf1))) mf = 20e-6*exp(-fabs(z)/zscale);  //внешняя зона  
+-    if(r>amf && r<amf1 && fabs(z)>=bmf1*sqrt(1-r*r/(amf1*amf1))) mf = (9.5*r+16)*1e-6*exp(-fabs(z)/zscale);
+-    if(r>=amf1 && r<=1) mf = 24e-6*exp(-fabs(z)/zscale);
+-    if(r>1 && r<=6) mf = (-2.8*r+27)*1e-6*exp(-fabs(z)/zscale);
+-    if(r>6) mf = (-0.35*r+12)*1e-6*exp(-fabs(z)/zscale);
+-  
+-    // the regular field is zero
+-    Breg =0.0;
+-    Bregx=0.0;
+-    Bregy=0.0;
+-    Bregz=0.0;
+- 
+-    Bran=mf;
+-    Branx=Bran;  // put all field in x-direction (has no significance)
+-    Brany=0.0;
+-    Branz=0.0;
+- 
+-    theta=0.0;
+-    phi  =0.0;
+-    
+-    if(parameters[9]==1) cout<<"r="<<r<<" z="<<z<<" MF="<<mf<<endl;
+-   } //M31-MAX
+-   
+-   if(name == "M31-test")
+-   {
+-     double mf;
+-     double r=sqrt(x*x+y*y);
+-     
+-     mf = (7e-6+43e-6*exp(-r/1.347))*exp(-fabs(z)/1.2);
+-  
+-    // the regular field is zero
+-    Breg =0.0;
+-    Bregx=0.0;
+-    Bregy=0.0;
+-    Bregz=0.0;
+- 
+-    Bran=mf;
+-    Branx=Bran;  // put all field in x-direction (has no significance)
+-    Brany=0.0;
+-    Branz=0.0;
+- 
+-    theta=0.0;
+-    phi  =0.0;
+-    
+-    if(parameters[9]==1) cout<<"r="<<r<<" z="<<z<<" MF="<<mf<<endl;	
+-   } //M31-test
+  
+    if(name == "test")
+    {
+--- 50,55 ----
+Только в /home/andrei/GP/galprop_v57/source: B_field_3D_model.h
+Только в /home/andrei/GP/galprop_v57/source: B_field_model.cc
+Только в /home/andrei/GP/galprop_v57/source: blattnig.cc
+Только в /home/andrei/GP/galprop_v57/source: Bremsstrahlung.cc
+Только в /home/andrei/GP/galprop_v57/source: Bremsstrahlung.h
+Только в /home/andrei/GP/galprop_v57/source: cfactor.f
+Только в /home/andrei/GP/galprop_v57/source: changeGasMaps.cc
+Только в /home/andrei/GP/galprop_v57/source: CMakeLists.txt
+Только в /home/andrei/GP/galprop_v57/source: CMakeLists.txt~
+Только в /home/andrei/GP/galprop_v57/source: Configure.cc
+Только в /home/andrei/GP/galprop_v57/source: Configure.cc~
+Только в /home/andrei/GP/galprop_v57/source: Configure.h
+Только в /home/andrei/GP/galprop_v57/source: create_galaxy.cc
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/create_gcr.cc" /home/andrei/GP/galprop_v57/source/create_gcr.cc
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/create_gcr.cc"	2023-03-23 13:03:42.543989115 +0300
+--- /home/andrei/GP/galprop_v57/source/create_gcr.cc	2022-06-08 20:09:15.000000000 +0300
+***************
+*** 71,77 ****
+     }
+  
+     if(galdef.verbose >= 1)cout<<endl<<"Number of species to create: n_species= "<<n_species<<endl<<endl;
+!    if(!n_species && !galdef.DM_gammas) {cout<<"create_gcr.cc: No particles specified -exit"<<endl; exit(1);}   //AE20230223
+  
+  // create a Particle array
+     gcr.resize(n_species);
+--- 71,77 ----
+     }
+  
+     if(galdef.verbose >= 1)cout<<endl<<"Number of species to create: n_species= "<<n_species<<endl<<endl;
+!    if(!n_species) {cout<<"create_gcr.cc: No particles specified -exit"<<endl; exit(1);}
+  
+  // create a Particle array
+     gcr.resize(n_species);
+Только в /home/andrei/GP/galprop_v57/source: create_SNR.cc
+Только в /home/andrei/GP/galprop_v57/source: DarkMatter.cc
+Только в /home/andrei/GP/galprop_v57/source: DarkMatter.h
+Только в /home/andrei/GP/galprop_v57/source: decayed_cross_sections.cc
+Только в /home/andrei/GP/galprop_v57/source: Distribution.cc
+Только в /home/andrei/GP/galprop_v57/source: DistributionFunction.cc
+Только в /home/andrei/GP/galprop_v57/source: DistributionFunction.h
+Только в /home/andrei/GP/galprop_v57/source: Distribution.h
+Только в /home/andrei/GP/galprop_v57/source: D_pp.cc
+Только в /home/andrei/GP/galprop_v57/source: D_xx.cc
+Только в /home/andrei/GP/galprop_v57/source: e_KN_loss.cc
+Только в /home/andrei/GP/galprop_v57/source: electrons_normalize.cc
+Только в /home/andrei/GP/galprop_v57/source: eprop.cc
+Только в /home/andrei/GP/galprop_v57/source: fill_transport_arrays.cc
+Только в /home/andrei/GP/galprop_v57/source: frag.f
+Только в /home/andrei/GP/galprop_v57/source: GalacticRadiationField.cc
+Только в /home/andrei/GP/galprop_v57/source: GalacticRadiationField.h
+Только в /home/andrei/GP/galprop_v57/source: Galaxy.cc
+Только в /home/andrei/GP/galprop_v57/source: Galaxy.h
+Только в /home/andrei/GP/galprop_v57/source: Galdef.cc
+Только в /home/andrei/GP/galprop_v57/source: Galdef.h
+Только в /home/andrei/GP/galprop_v57/source: Galprop.cc
+Только в /home/andrei/GP/galprop_v57/source: galprop_classes.h
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/Galprop.h" /home/andrei/GP/galprop_v57/source/Galprop.h
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/Galprop.h"	2023-03-23 13:03:40.867995063 +0300
+--- /home/andrei/GP/galprop_v57/source/Galprop.h	2022-06-08 20:09:06.000000000 +0300
+***************
+*** 80,88 ****
+    int gen_DM_source ( Particle& );
+    int gen_DM_emiss();
+    double DM_profile ( double, double, double );
+!   double DM_profile_av ( double,double,double,double ); //AE20201229
+!   double DM_profile_av ( double,double,double,double,double,double ); //AE20201229
+!   double DM_subs_boost ( double, double, double ); //AE20201229
+    int store_DM_emiss();
+    int store_DM_skymap();
+    
+--- 80,87 ----
+    int gen_DM_source ( Particle& );
+    int gen_DM_emiss();
+    double DM_profile ( double, double, double );
+!   double DM_profile_av ( double,double,double,double,double );
+!   double DM_profile_av ( double,double,double,double,double,double,double );
+    int store_DM_emiss();
+    int store_DM_skymap();
+    
+Только в /home/andrei/GP/galprop_v57/source: galprop_internal.cc
+Только в /home/andrei/GP/galprop_v57/source: galprop_internal.h
+Только в /home/andrei/GP/galprop_v57/source: galpropMain.cc
+Только в /home/andrei/GP/galprop_v57/source: galpropMain_mod.cc
+Только в /home/andrei/GP/galprop_v57/source: GalstructXMLDistribution.cc
+Только в /home/andrei/GP/galprop_v57/source: GalstructXMLDistribution.h
+Только в /home/andrei/GP/galprop_v57/source: GasEmissFunction.cc
+Только в /home/andrei/GP/galprop_v57/source: GasFunction.cc
+Только в /home/andrei/GP/galprop_v57/source: gauss.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_bremss_emiss.cc
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/gen_DM_source.cc" /home/andrei/GP/galprop_v57/source/gen_DM_source.cc
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/gen_DM_source.cc"	2023-03-23 13:03:42.495989285 +0300
+--- /home/andrei/GP/galprop_v57/source/gen_DM_source.cc	2022-06-08 20:09:15.000000000 +0300
+***************
+*** 6,34 ****
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  // The routine gen_DM_source calculates the source functions of the products of the
+! // dark matter (DM) particle annihilation [c/(4\pi) cm^-3 s^-1 MeV^-1].
+  // The routine can be used to calculate source function of positrons, electrons,
+  // and antiprotons.
+! // Use gen_DM_emiss to define gamma-ray emissivity (cm^-3 s^-1 MeV^-1 sr^-1)
+! // in terms (dn/dEdt *1/4pi), where n is the number density, c is speed of light (AE20131226 - c is removed, sr^-1 is added above - suggested typos).
+  // The user must use the parameters DM_double0-9 and DM_int0-9 (galdef-file) to 
+! // specify the Galactic DM profile, branching, decay channels, and spectra (see 
+  // the template below). The DM profile is defined in the DM_profile routine.
+  // The profile is then averaged over the grid step (dR,dz) or (dx,dy,dz) with 
+  // a smaller step: normally 1/10 of the grid size.          IMOS20050912
+  //
+  // See example in Moskalenko I.V., Strong A.W. 1999, Phys. Rev. D 60, 063003
+  // and realization below.
+- 
+- // Modified, improved and updated by Andrey Egorov - 11/29/2013-... .
+- 
+- //Attention! - DM_profile_av function below bears in fact DM density squared average.
+- 
+- //Transferred from v54 to v56 - AE20201229
+- //Transferred from v56 to v57 - AE20230116
+- 
+  //=="====!===="====!===="====!===="====!===="====!===="====!===="====!===="====!
+- //using namespace std;
+  #include"galprop_classes.h"
+  #include"galprop_internal.h"
+  
+--- 6,25 ----
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  // The routine gen_DM_source calculates the source functions of the products of the
+! // tark matter (DM) particle annihilation [cm^-3 s^-1 MeV^-1].
+  // The routine can be used to calculate source function of positrons, electrons,
+  // and antiprotons.
+! // Use gen_DM_emiss to define gamma-ray emissivity (cm^-3 s^-1 MeV^-1)
+! // in terms (dn/dEdt *c/4pi), where n is the number density, c is speed of light.
+  // The user must use the parameters DM_double0-9 and DM_int0-9 (galdef-file) to 
+! // tpecify the Galactic DM profile, branching, decay channels, and spectra (see 
+  // the template below). The DM profile is defined in the DM_profile routine.
+  // The profile is then averaged over the grid step (dR,dz) or (dx,dy,dz) with 
+  // a smaller step: normally 1/10 of the grid size.          IMOS20050912
+  //
+  // See example in Moskalenko I.V., Strong A.W. 1999, Phys. Rev. D 60, 063003
+  // and realization below.
+  //=="====!===="====!===="====!===="====!===="====!===="====!===="====!===="====!
+  #include"galprop_classes.h"
+  #include"galprop_internal.h"
+  
+***************
+*** 39,48 ****
+--- 30,44 ----
+  //extern "C" void RHO_DARKSUSY_F77(double*,double*,double*,double*); //IMOS20060901
+  
+  #include <ErrorLogger.h>
++ #include <Malloc.h>
+  
+  #include <stdio.h>
+  #include <fstream>
+  #include <math.h>
++ //#include <gsl/gsl_errno.h>
++ //#include <gsl/gsl_math.h>
++ //#include <gsl/gsl_interp2d.h>
++ //#include <gsl/gsl_spline2d.h>
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  
+***************
+*** 51,262 ****
+    INFO("Entry");
+    
+    std::ostringstream os;
+!   os<<"generating "<<particle.name<<" source function for n_spatial_dimensions="<<galdef.n_spatial_dimensions<<endl;
+    INFO(os.str());
+    
+!   const double DMmass=galdef.DM_double2,                               // DM particle mass, GeV
+!               DMcs_v=galdef.DM_double9;                               // DM <cross_sec*V> -thermally averaged, cm3 s-1
+!        double DME0,DMwidth,DMbranching,DMsecondary_spectrum;          // obsolete - needed for DarkSUSY
+!  int stat=0, iwm=0, SD_key=galdef.DM_int4, channel_key=galdef.DM_int2;         
+! 
+!  FILE *fDM;                                               // file with annihilation yields data for p* and ee*
+!  const long NsDMy=55242, NDMm=62, NsDMym=891;             // for operation with yields data 
+!  double DMy[NsDMy], DMym[NsDMym];                                      
+!  const double mt[NDMm] = {5.,6.,8.,10.,15.,20.,25.,30.,40.,50.,60.,70.,80.,90.,100.,110.,120.,130.,140.,150.,160.,180.,200.,220.,240.,260.,280.,300.,330.,360.,
+! 400.,450.,500.,550.,600.,650.,700.,750.,800.,900.,1000.,1100.,1200.,1300.,1500.,1700.,2000.,2500.,3000.,4000.,5000.,6000.,7000.,
+! 8000.,9000.,10000.,12000.,15000.,20000.,30000.,50000.,100000.};   // masses with tabulated yields
+!  const std::string DMDirectory = configure.fGlobalDataPath+"/";
+!  std::string filename = DMDirectory;
+!  const char *str;
+! 
+!  if("DM_antiprotons" == particle.name)
+!    {
+!     SD_key=0;
+!     switch(channel_key)
+!     {
+!      case 1: filename += "DM-e-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // e^+e^- channel
+!      case 2: filename += "DM-mu-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \mu^+\mu^- channel
+!      case 3: filename += "DM-tau-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \tau^+\tau^- channel
+!      case 4: filename += "DM-q-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // qq* channel
+!      case 5: filename += "DM-c-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // cc* channel
+!      case 6: filename += "DM-b-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // bb* channel
+!      case 7: filename += "DM-t-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // tt* channel
+!      case 8: filename += "DM-g-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \gamma\gamma channel
+!      case 9: filename += "DM-gl-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // gg channel
+!      case 10: filename += "DM-W-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // W^+W^- channel
+!      case 11: filename += "DM-Z-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // ZZ channel
+!      case 12: filename += "DM-h-p.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // hh channel
+!     }
+!    }
+  
+!  if(particle.name == "DM_electrons" || particle.name == "DM_positrons")
+!    {
+!     switch(channel_key)
+      {
+!      case 1: filename += "DM-e-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // e^+e^- channel
+!      case 2: filename += "DM-mu-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \mu^+\mu^- channel
+!      case 3: filename += "DM-tau-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \tau^+\tau^- channel
+!      case 4: filename += "DM-q-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // qq* channel
+!      case 5: filename += "DM-c-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // cc* channel
+!      case 6: filename += "DM-b-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // bb* channel
+!      case 7: filename += "DM-t-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // tt* channel
+!      case 8: filename += "DM-g-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // \gamma\gamma channel
+!      case 9: filename += "DM-gl-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // gg channel
+!      case 10: filename += "DM-W-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // W^+W^- channel
+!      case 11: filename += "DM-Z-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // ZZ channel
+!      case 12: filename += "DM-h-e.dat";
+!              str = filename.c_str();	
+!              fDM=fopen(str,"r");
+!              break; // hh channel
+!     }
+!    } 
+  
+!  fseek(fDM, 0, SEEK_SET);
+!  for (long jDMy=0; jDMy<NsDMy; jDMy++)
+!       { 
+!        fscanf(fDM, "%lf", &DMy[jDMy]);
+!       }
+!  fclose(fDM);
+  
+  
+!  for(int ia=0; ia<NDMm; ia++) 
+!     {
+!      if(DMmass==mt[ia]) 
+!        {iwm=ia+1;                                                       // yields' preparation from mass analysis
+!         break;
+         }
+      }
+!  if(iwm>=1)
+!    {
+!     for(int ib=0; ib<NsDMym; ib++) DMym[ib]=DMy[(iwm-1)*NsDMym+ib];
+!    }
+!  else
+!    {
+!     while (DMmass>mt[iwm]) iwm++;
+!     for(int ic=0;ic<NsDMym;ic++) DMym[ic]=DMy[(iwm-1)*NsDMym+ic]+((DMy[iwm*NsDMym+ic]-DMy[(iwm-1)*NsDMym+ic])*(DMmass-mt[iwm-1]))/(mt[iwm]-mt[iwm-1]);
+!    } 
+!   
+  // assign the source function (2D)
+  
+     if(galdef.n_spatial_dimensions==2)
+       {
+! 	   if(galdef.DM_int1==9) // Green's function to work with DarkSUSY IMOS20060901
+! 		     particle.source_function.assign(
+                      [&](size_t ir, size_t iz, size_t ip)->double {
+!                         return (DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) ? 0.0 :
+! 			 DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], grid.Get_drdn()[ir], grid.Get_dzdn()[iz])
+  			 *DMsecondary_spectrum*DMbranching/4./Pi*C;
+! 			 });  // end of DarkSUSY area
+! 		   else
+! 		     particle.source_function.assign(
+                      [&](size_t ir, size_t iz, size_t ip)->double {
+!                         return(particle.Etot[ip]*1.e-3<=DMmass && particle.Ekin[ip]*1.e-3>=pow(10,-8.9)*DMmass) ?
+! 		            (1.+SD_key)*(C/(4.*Pi))*0.5*DMcs_v*DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], grid.Get_drdn()[ir], grid.Get_dzdn()[iz])*pow(DMmass,-2.)*DM_subs_boost(grid.Get_r()[ir], 0., grid.Get_z()[iz])*DMym[lround(100.*log10(particle.Ekin[ip]/(DMmass*1000.)))+NsDMym-1]/(log(10.)*particle.Ekin[ip]) : 0.0 ;
+!                            });
+!                                           
+! if(galdef.verbose>=3)
+! for(size_t ir=0; ir<grid.Get_n_r(); ir++)  {
+! for(size_t iz=0; iz<grid.Get_n_z(); iz++)    {
+! for(size_t ip=0; ip<grid.Get_n_Ekin(); ip++)  {
+! cout<<" r = "<<grid.Get_r()[ir]<<" z = "<<grid.Get_z()[iz]<<" Ekin = "<<particle.Ekin[ip]<<" rho_{DM}_sq_av = "<<DM_profile_av(grid.Get_r()[ir],grid.Get_z()[iz],grid.Get_drdn()[ir],grid.Get_dzdn()[iz])<<" B(R) = "<<DM_subs_boost(grid.Get_r()[ir],0,grid.Get_z()[iz])<<" SF = "<<particle.source_function(ir,iz,ip)<<endl; }}}  //test printout
+!      }  //  particle.n_spatial_dimensions==2
+     
+  // assign the source function (3D)
+  
+     if(galdef.n_spatial_dimensions==3)
+       {
+!        if(galdef.DM_int1==9) // Green's function to work with DarkSUSY IMOS20060901
+! 	   particle.source_function.assign(
+                   [&](size_t ix, size_t iy, size_t iz, size_t ip)->double {
+!                      return (DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) ? 0.0 : 
+! 		      DM_profile_av(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz], grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz])*DMsecondary_spectrum*DMbranching/4./Pi*C;
+! 			   });
+! 		else 
+!                      particle.source_function.assign(
+!                  [&](size_t ix, size_t iy, size_t iz, size_t ip)->double {  
+! 		       return(particle.Etot[ip]*1.e-3<=DMmass && particle.Ekin[ip]*1.e-3>=pow(10,-8.9)*DMmass) ?
+!                             (1.+SD_key)*(C/(4.*Pi))*0.5*DMcs_v*DM_profile_av(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz], grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz])*pow(DMmass,-2.)*DM_subs_boost(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz])*DMym[lround(100.*log10(particle.Ekin[ip]/(DMmass*1000.)))+NsDMym-1]/(log(10.)*particle.Ekin[ip]) : 0.0;
+!                               });
+! 		    
+! if(galdef.verbose>=3)
+! for(size_t ix=0; ix<grid.Get_n_x(); ix++)	  {
+! for(size_t iy=0; iy<grid.Get_n_y(); iy++)	  {
+! for(size_t iz=0; iz<grid.Get_n_z(); iz++)	  {
+! for(size_t ip=0; ip<grid.Get_n_Ekin(); ip++)  {
+! cout<<" x = "<<grid.Get_x()[ix]<<" y = "<<grid.Get_y()[iy]<<" z = "<<grid.Get_z()[iz]<<" Ekin = "<<particle.Ekin[ip]<<" rho_{DM}_sq_av = "<<DM_profile_av(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz], grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz])<<" B(R) = "<<DM_subs_boost(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz])<<" SF = "<<particle.source_function(ix,iy,iz,ip)<<endl;  }}}} //test printout
+!      }  //  if particle.n_spatial_dimensions==3
+   
+!    cout<<" <<<< gen_DM_source - exit"<<endl;
+!    return stat;   
+  }
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+--- 47,212 ----
+    INFO("Entry");
+    
+    std::ostringstream os;
+!   os<<"generating "<<particle.name<<" source function for n_spatial_dimensions="
+!       <<galdef.n_spatial_dimensions<<endl;
+    INFO(os.str());
+    
+!   double DMwidth,DMbranching,   // annihilation product distribution
+!     DMsecondary_spectrum,       // spectrum of secondaries from DM annihilation
+!     DME0;                       // delta function energy used for Green's function
+!   const double  DMmass  =galdef.DM_double2, // DM particle mass
+!     DMcs_v  =galdef.DM_double9, // DM <cross_sec*V> -thermally overaged, cm3 s-1 
+!     dzz=0.01;                   // kpc, gas averaging step
+!   int stat=0;
+! 
+!   darkmatter.setBranchingFractions(galdef);
+  
+!   // define the spectra of annihilation products: positrons, electrons, antiprotons
+!   
+!   if("DM_positrons" == particle.name) //strcmp(particle.name,"DM_positrons")==0)
+      {
+!        DMwidth     =galdef.DM_double3;
+!        DMbranching =galdef.DM_double4;
+!      }
+  
+!   if("DM_electrons" == particle.name) //strcmp(particle.name,"DM_electrons")==0)
+!      {
+!        DMwidth     =galdef.DM_double5;
+!        DMbranching =galdef.DM_double6;
+!      }
+! 
+!   if("DM_antiprotons" == particle.name) //strcmp(particle.name,"DM_antiprotons")==0)
+!      {
+!        DMwidth     =galdef.DM_double7;
+!        DMbranching =galdef.DM_double8;
+!      }
+! 
+!   // New darkmatter cross sections.
+!   if("DM_antiprotons" == particle.name && galdef.DM_int1 == 111) {
+! 
+!     INFO("Using DarkMatter class for the antiproton cross section");
+!      
+!     //Pre-calculate the energy spectrum.  It outputs dN/dEk so turn into dN/dp.  Convert from GeV^-1 to MeV^-1
+!     double *dndp = static_cast<double*>(mlc::MallocAligned(grid.Get_n_Ekin()*sizeof(double)));
+!     for (size_t ip=0; ip < grid.Get_n_Ekin(); ++ip) {
+!        if(particle.Etot[ip] * 1.e-3 <= DMmass) {
+!           dndp[ip] = (darkmatter)(DMmass, particle.Etot[ip]*1e-3) * particle.beta[ip] * 1e-3;
+!        } else {
+!           dndp[ip] = 0;
+!        }
+!     }
+  
++     //Includes the cross section and c/4pi required internally by galprop
++     const double factor = DMcs_v * C / 4 / Pi;
+  
+!     if(galdef.n_spatial_dimensions==2) {
+! #pragma omp parallel for schedule(static) default(shared)
+!        for(size_t ir=0; ir<grid.Get_n_r(); ++ir) {
+!            for(size_t iz=0; iz<grid.Get_n_z(); ++iz) {
+!               const double dm2 = pow(DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], grid.Get_drdn()[ir], grid.Get_dzdn()[iz], dzz)/DMmass,2);
+!               double *sd = &particle.source_function(ir,iz,0);
+! #pragma omp simd 
+!               for (size_t ip=0; ip < grid.Get_n_Ekin(); ++ip)
+!                  sd[ip] += 0.5 * factor * dm2 * dndp[ip];
+!            }
+!         }
+!     } else if (galdef.n_spatial_dimensions==3) {
+! #pragma omp parallel for schedule(static) default(shared)
+!        for(size_t ix=0; ix<grid.Get_n_x(); ++ix) {
+!           for(size_t iy=0; iy<grid.Get_n_y(); ++iy) {
+!              for(size_t iz=0; iz<grid.Get_n_z(); ++iz) {
+!                 const double dm2 = pow(DM_profile_av(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz], 
+!                                        grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz], dzz)/DMmass,2);
+!                 double *sd = &particle.source_function(ix,iy,iz,0);
+! #pragma omp simd 
+!                 for (size_t ip=0; ip < grid.Get_n_Ekin(); ++ip)
+!                    sd[ip] += 0.5 * factor * dm2 * dndp[ip];
+!              }
+!           }
+         }
+      }
+!     
+!     mlc::FreeAligned(dndp);
+!     return 0;
+!   }
+  // assign the source function (2D)
+  
++ 
++ 
+     if(galdef.n_spatial_dimensions==2)
+       {
+!         if(abs(galdef.DM_int0)==99 && particle.A==0) 
+!         {
+! // test of electron propagation vs analytical calculations IMOS20061030
+! // to run test, assign galdef.DM_int0=99, other parameters:
+! // galdef.DM_double6 - the half thickness of the disk source distribution (e.g. 0.1 kpc), the source 
+! //                     distribution is uniform within the disk; normalization =1 at 1 GeV
+! // galdef.DM_double7 - the photon field energy density (e.g. 1 eV/cc)
+! // galdef.DM_double8 - the injection spectral index of electrons (e.g. 2.4)
+!            if("DM_electrons" == particle.name) 
+!               particle.source_function.assign(
+!                     [&](size_t ir, size_t iz, size_t ip) {
+!                        return (galdef.DM_double6 <= fabs(grid.Get_z()[iz])) ? 0.:
+!                           C/4./Pi*pow(particle.Ekin[ip]*1e-3,-galdef.DM_double8); //The spectrum is normalized at 1 GeV
+!                     });
+!            if("DM_positrons" == particle.name) 
+!               particle.source_function = 0;
+! 	// end of the test area
+!         } 
+! 	else
+!         {
+!            if(galdef.DM_int1==9) // Green's function to work with DarkSUSY IMOS20060901
+!               particle.source_function.assign(
+                      [&](size_t ir, size_t iz, size_t ip)->double {
+! 		       return (DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) ? 0.0 : 
+! 			 pow(DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], grid.Get_drdn()[ir], grid.Get_dzdn()[iz], dzz),2)
+  			 *DMsecondary_spectrum*DMbranching/4./Pi*C;
+!                     });
+!            else
+!               particle.source_function.assign(
+                      [&](size_t ir, size_t iz, size_t ip)->double {
+! 		        return(particle.Etot[ip]*1.e-3<=DMmass) ? 
+!                            DMcs_v* pow(DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], 
+!                                  grid.Get_drdn()[ir], grid.Get_dzdn()[iz], dzz)/DMmass,2)
+! 		              *C/4./Pi*DMbranching*exp(-pow((DMmass-particle.Etot[ip]*1.e-3)/DMwidth,2))/DMmass*1.e-3
+!                               : 0.0;
+!                     });
+!         }
+!      }
+! 
+     
+  // assign the source function (3D)
+  
+     if(galdef.n_spatial_dimensions==3)
+       {
+!         if(galdef.DM_int1==9) // Green's function to work with DarkSUSY IMOS20060901
+!            particle.source_function.assign(
+!                  [&](size_t ix, size_t iy, size_t iz, size_t ip)->double {
+!                  return (DME0<particle.Ekin[ip] || DME0/DMwidth>particle.Ekin[ip]) ? 0.0 : 
+!                  pow(DM_profile_av(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz], 
+!                        grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz], dzz),2)
+!                  *DMsecondary_spectrum*DMbranching/4./Pi*C;
+!                  });
+!         else
+!            particle.source_function.assign(
+                   [&](size_t ix, size_t iy, size_t iz, size_t ip)->double {
+!                  return(particle.Etot[ip]*1.e-3<=DMmass) ? 
+!                  DMcs_v* pow(DM_profile_av(grid.Get_x()[ix], grid.Get_y()[ix], grid.Get_z()[iz], 
+!                        grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz], dzz)/DMmass,2)
+!                  *C/4./Pi*DMbranching*exp(-pow((DMmass-particle.Etot[ip]*1.e-3)/DMwidth,2))/DMmass*1.e-3
+!                  : 0.0;
+!                  });
+!      }  //  galdef.n_spatial_dimensions==3
+   
+!  // test printout
+! 
+!    if(galdef.verbose>=2)
+!      {
+!        cout<<"   particle.source_function for "<<particle.name<<endl;
+!        particle.source_function.print();
+!      }
+!    INFO("Exit");
+!    return stat;
+  }
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+***************
+*** 264,535 ****
+  int Galprop::gen_DM_emiss()
+  {
+     INFO("Entry");
+-    cout<<"gen_DM_emiss"<<endl;
+-    cout<<"generating DM prompt gamma emissivity for n_spatial_dimensions="<<galdef.n_spatial_dimensions<<endl;
+- 
+     double 
+!      DMmass      =galdef.DM_double2,                  // DM particle mass, GeV
+!      DMcs_v      =galdef.DM_double9;                  // DM <cross_sec*V> -thermally overaged, cm3 s-1 
+!    int stat=0, iwm=0, channel_key=galdef.DM_int2;     // last one sets annihilation channel
+! 
+!    FILE *fDMg;                                                 //file with annihilation yields data for gammas
+!    const long NsDMy=55242, NDMm=62, NsDMym=891;             // for operation with yields data 
+!    double DMy[NsDMy], DMym[NsDMym];                                      
+!    const double mt[NDMm]={5.,6.,8.,10.,15.,20.,25.,30.,40.,50.,60.,70.,80.,90.,100.,110.,120.,130.,140.,150.,160.,180.,200.,220.,240.,260.,280.,300.,330.,360.,
+! 400.,450.,500.,550.,600.,650.,700.,750.,800.,900.,1000.,1100.,1200.,1300.,1500.,1700.,2000.,2500.,3000.,4000.,5000.,6000.,7000.,
+! 8000.,9000.,10000.,12000.,15000.,20000.,30000.,50000.,100000.};   // masses with tabulated yields
+!    const std::string DMDirectory = configure.fGlobalDataPath+"/";
+!    std::string filename = DMDirectory;
+!    const char *str;
+!   
+! 
+!  switch(channel_key)
+!   {
+!      case 1: filename += "DM-e-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // e^+e^- channel
+!      case 2: filename += "DM-mu-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // \mu^+\mu^- channel
+!      case 3: filename += "DM-tau-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // \tau^+\tau^- channel
+!      case 4: filename += "DM-q-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // qq* channel
+!      case 5: filename += "DM-c-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // cc* channel
+!      case 6: filename += "DM-b-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // bb* channel
+!      case 7: filename += "DM-t-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // tt* channel
+!      case 8: filename += "DM-g-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // \gamma\gamma channel
+!      case 9: filename += "DM-gl-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // gg channel
+!      case 10: filename += "DM-W-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // W^+W^- channel
+!      case 11: filename += "DM-Z-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // ZZ channel
+!      case 12: filename += "DM-h-g.dat";
+!              str = filename.c_str();	
+!              fDMg=fopen(str,"r");
+!              break; // hh channel
+!   }
+! 
+!  fseek(fDMg, 0, SEEK_SET);
+!  for (long jDMy=0; jDMy<NsDMy; jDMy++)
+!       {
+!        fscanf(fDMg, "%lf", &DMy[jDMy]);
+!       }
+!  fclose(fDMg);
+! 
+! 
+!  for(int ia=0; ia<NDMm; ia++) 
+!     {
+!      if(DMmass==mt[ia]) 
+!        {iwm=ia+1;                                                       // yields' preparation from mass analysis
+!         break;
+!        }
+!     }
+!  if(iwm>=1)
+!    {
+!     for(int ib=0; ib<NsDMym; ib++) DMym[ib]=DMy[(iwm-1)*NsDMym+ib];
+!    }
+!  else
+!    {
+!     while (DMmass>mt[iwm]) iwm++;
+!     for(int ic=0;ic<NsDMym;ic++) DMym[ic]=DMy[(iwm-1)*NsDMym+ic]+((DMy[iwm*NsDMym+ic]-DMy[(iwm-1)*NsDMym+ic])*(DMmass-mt[iwm-1]))/(mt[iwm]-mt[iwm-1]);
+!    } 
+  
+     galaxy.DM_emiss=0.;
+  
+  // define the spectra of annihilation products: gammas
+     
+     if(galdef.n_spatial_dimensions==2)
+!       {
+!       	galaxy.DM_emiss.assign([&](size_t ir, size_t iz, size_t iEgamma) {
+!              return(galaxy.E_gamma[iEgamma]*1.e-3<=DMmass && galaxy.E_gamma[iEgamma]*1.e-3>=pow(10,-8.9)*DMmass) ?
+! 		    (1/(4.*Pi))*0.5*DMcs_v*DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], grid.Get_drdn()[ir], grid.Get_dzdn()[iz])*pow(DMmass,-2.)*DM_subs_boost(grid.Get_r()[ir], 0., grid.Get_z()[iz])*DMym[lround(100.*log10(galaxy.E_gamma[iEgamma]/(DMmass*1000.)))+NsDMym-1]/(log(10.)*galaxy.E_gamma[iEgamma]) : 0.0;
+! 		           });                    
+! if(galdef.verbose>=3)
+! for(size_t ir=0; ir<grid.Get_n_r(); ir++)  {
+! for(size_t iz=0; iz<grid.Get_n_z(); iz++)  {
+! for(size_t iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)   {
+! cout<<" r = "<<grid.Get_r()[ir]<<" z = "<<grid.Get_z()[iz]<<" Egamma = "<<galaxy.E_gamma[iEgamma]<<" rho_{DM}_sq_av = "<<DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], grid.Get_drdn()[ir], grid.Get_dzdn()[iz])<<" B(R) = "<<DM_subs_boost(grid.Get_r()[ir], 0., grid.Get_z()[iz])<<" SF = "<<galaxy.DM_emiss(ir,iz,iEgamma)<<endl;  }}} //test printout
+!      } // if n_spatial_dimensions==2
+  
+     if(galdef.n_spatial_dimensions==3)
+       {
+!       galaxy.DM_emiss.assign(
+               [&](size_t ix, size_t iy, size_t iz, size_t iEgamma) {
+! 		       return(galaxy.E_gamma[iEgamma]*1.e-3<=DMmass && galaxy.E_gamma[iEgamma]*1.e-3>=pow(10,-8.9)*DMmass) ?
+!                                (1/(4.*Pi))*0.5*DMcs_v*DM_profile_av(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz], grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz])*pow(DMmass,-2.)*DM_subs_boost(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz])*DMym[lround(100.*log10(galaxy.E_gamma[iEgamma]/(DMmass*1000.)))+NsDMym-1]/(log(10.)*galaxy.E_gamma[iEgamma]) : 0.0;
+!                               });  
+! 	
+! if(galdef.verbose>=3)
+! for(size_t ix=0; ix<grid.Get_n_x(); ix++)	  {
+! for(size_t iy=0; iy<grid.Get_n_y(); iy++)	  {
+! for(size_t iz=0; iz<grid.Get_n_z(); iz++)	  {
+! for(size_t iEgamma=0; iEgamma<galaxy.n_E_gammagrid; iEgamma++)   {
+! cout<<" x = "<<grid.Get_x()[ix]<<" y = "<<grid.Get_y()[iy]<<" z = "<<grid.Get_z()[iz]<<" Egamma = "<<galaxy.E_gamma[iEgamma]<<" rho_{DM}_sq_av = "<<DM_profile_av(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz], grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz])<<" B(R) = "<<DM_subs_boost(grid.Get_x()[ix], grid.Get_y()[iy], grid.Get_z()[iz])<<" SF = "<<galaxy.DM_emiss(ix,iy,iz,iEgamma)<<endl;  }}}} //test printout
+!      } // if n_spatial_dimensions==3     
+     INFO("Exit");
+!    return(stat);   
+  }
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  
+  double Galprop::DM_profile(double Xkpc, double Ykpc, double Zkpc)
+  {
+!   double R=sqrt(Xkpc*Xkpc+Ykpc*Ykpc+Zkpc*Zkpc),
+!     Rc         =galdef.DM_double0, //core radius, kpc
+!     rho0       =galdef.DM_double1, //scale DM mass density, GeV cm^-3
+!     Rtr        =galdef.DM_double8, //truncation radius for the NFW profile, where density goes flat, kpc
+!     aEin       =galdef.DM_double7, //\alpha parameter for the Einasto profile
+!     gammaNFW   =galdef.DM_double6; //\gamma parameter for the generalized NFW profile
+    int profile_key =galdef.DM_int0; //profile type
+    
+    switch(profile_key)
+      {
+!     case 0:   //generalized NFW profile
+!       return(rho0*pow(fmax(R,Rtr)/Rc,-gammaNFW)*pow(1.+fmax(R,Rtr)/Rc,gammaNFW-3.));
+!       break;
+        
+!     case 1:   //Isothermal profile
+!       return(rho0/(1.+pow(R/Rc,2.)));
+!       break;
+        
+!     case 2:   //Einasto profile
+!       return(rho0*exp(-2./aEin*(pow(R/Rc,aEin)-1.)));
+!       break;
+        
+!     case 3:   //Burkert profile
+!       return(rho0/((1.+R/Rc)*(1.+pow(R/Rc,2.))));
+!       break;
+        
+!     /* case 9:   //DarkSUSY profile (use only if the DarkSUSY and GALPROP combined) IMOS20060901
+!       RHO_DARKSUSY_F77(&Xkpc,&Ykpc,&Zkpc,&rho0);
+        if(rho0<0.)
+  	{
+! 	  cout<<"gen_DM_source: rho_darksusy() function is not defined"<<endl;
+  	  exit(0);
+  	}
+        return(rho0);
+-       break; */
+  
+!     default: INFO("No valid DM profile specified!");
+      }
+  }
+! //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|  
+  
+-  double Galprop::DM_profile_av(double r,double z,double dr,double dz)
+-    {  
+-      double DM_profile_av_=0., rho0 =galdef.DM_double1, dd=0.01;
+-      int nuse=0, profile_key =galdef.DM_int0; 
+- 
+-    if (r<1.e-6 && abs(z)<1.e-6) 
+-      {  
+-       for (double zz=z-0.5*dz; zz<z+(0.5+0.02*dd)*dz; zz+=0.1*dd*dz)
+-             {
+-              for (double rr=0; rr<r+(0.5+0.02*dd)*dr; rr+=0.1*dd*dr)
+- 	         { 
+- 	           DM_profile_av_+=DM_profile(rr,0.,zz)*DM_profile(rr,0.,zz);
+- 	           nuse++; 
+- 	         } //rr
+-              } //zz
+-          return (DM_profile_av_/nuse);
+-     }  //if
+- 
+-    else 
+-        {
+-         for (double zz=z-0.5*dz; zz<z+(0.5+0.2*dd)*dz; zz+=dd*dz)
+-             {
+-              for (double rr=r-0.5*dr; rr<r+(0.5+0.2*dd)*dr; rr+=dd*dr)
+- 	         { 
+- 	           if (rr<0.) continue;
+- 	           DM_profile_av_+=DM_profile(rr,0.,zz)*DM_profile(rr,0.,zz);
+- 	           nuse++; 
+- 	         } //rr
+-              } //zz
+-          return (DM_profile_av_/nuse);
+-         }  //else
+-     }
+-    
+-  
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+  
+!  
+!  double Galprop::DM_profile_av(double x,double y,double z,double dx,double dy,double dz)
+!   {  
+!      double DM_profile_av_=0., rho0 =galdef.DM_double1, dd=0.1;
+!      int nuse =0, profile_key =galdef.DM_int0; 
+! 
+!   if (abs(x)<1.e-6 && abs(y)<1.e-6 && abs(z)<1.e-6) 
+!      {  
+!       for (double zz=z-0.5*dz; zz<z+(0.5+0.02*dd)*dz; zz+=0.1*dd*dz)
+!            {
+!             for (double xx=x-0.5*dx; xx<x+(0.5+0.02*dd)*dx; xx+=0.1*dd*dx)
+!                 {
+!                  for (double yy=y-0.5*dy; yy<y+(0.5+0.02*dd)*dy; yy+=0.1*dd*dy)
+! 	             {
+! 	               DM_profile_av_+=DM_profile(xx,yy,zz)*DM_profile(xx,yy,zz);
+! 	               nuse++;
+! 	             } //yy
+!                 } //xx
+!            } //zz
+!        return (DM_profile_av_/nuse);
+!     }  //if
+! 
+!   else {
+!         for (double zz=z-0.5*dz; zz<z+(0.5+0.2*dd)*dz; zz+=dd*dz)
+!            {
+!             for (double xx=x-0.5*dx; xx<x+(0.5+0.2*dd)*dx; xx+=dd*dx)
+!                 {
+!                  for (double yy=y-0.5*dy; yy<y+(0.5+0.2*dd)*dy; yy+=dd*dy)
+! 	             {
+! 	               DM_profile_av_+=DM_profile(xx,yy,zz)*DM_profile(xx,yy,zz);
+! 	               nuse++;
+! 	             } //yy
+!                 } //xx
+!            } //zz
+!        return (DM_profile_av_/nuse);
+!       } //else
+!     }
+   
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+   
+!  double Galprop::DM_subs_boost(double Xkpc, double Ykpc, double Zkpc)
+!   {
+!     double R = sqrt(Xkpc*Xkpc+Ykpc*Ykpc+Zkpc*Zkpc);
+!     int boost_key = galdef.DM_int3;  //switch boost on/off
+!       switch(boost_key)
+!        {
+!          case 0: return(1.);  // no boost
+!          
+!          case 1: return(pow(10, -0.134689*log10(R+1)+1.46994*log10(R+1)*log10(R+1)-3.63691*pow(log10(R+1),3)+3.80076*pow(log10(R+1),4)-1.49046*pow(log10(R+1),5)+0.202405*pow(log10(R+1),6)) );  // newer B(R) - valid until R = 300 kpc
+! 
+!          case 9: return(1.00254+0.0481409*R-0.00568977*R*R+0.0012815*pow(R,3.)-0.0000601459*pow(R,4.)+1.78452e-6*pow(R,5.)-2.69758e-8*pow(R,6.)+2.02793e-10*pow(R,7.)-5.97113e-13*pow(R,8.)); // old (but same for R < 100 kpc) B(R) - for consistency test
+! 
+!        }
+    }
+  
+!  
+--- 214,342 ----
+  int Galprop::gen_DM_emiss()
+  {
+     INFO("Entry");
+     double 
+!      DMmass      =galdef.DM_double2, // DM particle mass
+!      DMcs_v      =galdef.DM_double9, // DM <cross_sec*V> -thermally overaged, cm3 s-1 
+!      DMbranching =0.1,
+!      dzz=0.01;                       // kpc, gas averaging step
+!    int stat=0;
+  
+     galaxy.DM_emiss=0.;
+  
+  // define the spectra of annihilation products: gammas
+     
+     if(galdef.n_spatial_dimensions==2)
+!      {
+!        ostringstream os;
+!        os<<"generating DM emissivity for n_spatial_dimensions="<<galdef.n_spatial_dimensions;
+!        INFO(os.str());
+!        galaxy.DM_emiss.assign(
+!              [&](size_t ir, size_t iz, size_t iEgamma) {
+!                return (galaxy.E_gamma[iEgamma]*1.e-3>DMmass) ? 0.0 :  DMcs_v *DMbranching/(4.*Pi)// sr^-1 IMOS20060420
+!                   *pow(DM_profile_av(grid.Get_r()[ir], grid.Get_z()[iz], grid.Get_drdn()[ir], grid.Get_dzdn()[iz], dzz)/DMmass,2)
+!                   /galaxy.E_gamma[iEgamma];
+!              });
+  
++      }
+     if(galdef.n_spatial_dimensions==3)
+       {
+!        ostringstream os;
+!        os<<"generating DM emissivity for n_spatial_dimensions="<<galdef.n_spatial_dimensions;
+!        INFO(os.str());
+!        galaxy.DM_emiss.assign(
+               [&](size_t ix, size_t iy, size_t iz, size_t iEgamma) {
+!                return (galaxy.E_gamma[iEgamma]*1.e-3>DMmass) ? 0.0 :  DMcs_v *DMbranching/(4.*Pi)// sr^-1 IMOS20060420
+!                   *pow(DM_profile_av(grid.Get_x()[ix], grid.Get_y()[ix], grid.Get_z()[iz], 
+!                         grid.Get_dxdn()[ix], grid.Get_dydn()[iy], grid.Get_dzdn()[iz], dzz)/DMmass,2)
+!                   /galaxy.E_gamma[iEgamma];
+!              });
+!      }
+     INFO("Exit");
+!    return(stat);
+  }
+  
+  //**"****!****"****!****"****!****"****!****"****!****"****!****"****!****"****|
+  
+  double Galprop::DM_profile(double Xkpc, double Ykpc, double Zkpc)
+  {
+!   double R= std::max(sqrt(Xkpc*Xkpc+Ykpc*Ykpc+Zkpc*Zkpc), 1e-3),
+!     Rsun =galdef.Rsun,                     //kpc, galactocentric distance of the solar system 
+!     Rc         =galdef.DM_double0, //core radius
+!     rho0       =galdef.DM_double1, //local DM mass density
+!     gamma      =galdef.DM_doubleA; //slope of NFW profile
+    int profile_key =galdef.DM_int0; //profile type
+    
+    switch(profile_key)
+      {
+!     case 0:   //NFW profile
+!       return( rho0 * pow(Rc/Rsun,-gamma)*pow(1.+Rsun/Rc,3-gamma) * pow(Rc/R,gamma)*pow(1.+R/Rc,gamma-3) );
+        
+!     case 1:   //isothermal profile
+!       return(rho0*(pow(Rc,2)+pow(Rsun,2))/(pow(Rc,2)+pow(R,2)));
+        
+!     case 2:   //Evans profile
+!       return(rho0*pow(pow(Rc,2)+pow(Rsun,2),2)/(3.*pow(Rc,2)+pow(Rsun,2))
+! 	     *(3.*pow(Rc,2)+pow(R,2))/pow(pow(Rc,2)+pow(R,2),2));
+        
+!     case 3:   //alternative profile
+!       return(rho0*pow(Rc+Rsun,2)/pow(Rc+R,2));
+        
+!     case 9:   //DarkSUSY profile (use only if the DarkSUSY and GALPROP combined) IMOS20060901
+!       rho0 = rho_darksusy_cc(Xkpc,Ykpc,Zkpc);
+! 
+        if(rho0<0.)
+  	{
+! 	  FATAL("gen_DM_source: rho_darksusy() function is not defined");
+  	  exit(0);
+  	}
+        return(rho0);
+  
+!     default:
+!       return(rho0);
+      }
+  }
+!   
+  
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+  
+! double Galprop::DM_profile_av(double r,double z,double dr,double dz,double dzz)
+! {  
+!   if (2*dzz < dz) {
+!     double DM_profile_av_=0.0;
+!     int nuse=0;
+! 
+!     for (double zz=z-dz/2.; zz<=z+dz/2.; zz+=dzz)
+!       for (double rr=r-dr/2.; rr<=r+dr/2.; rr+=dr/10.)
+!       { 
+!         if (rr<0.) continue;
+!         DM_profile_av_+=DM_profile(rr,0,zz);
+!         nuse++; 
+!       }
+!     return (DM_profile_av_/nuse);
+!   } else {
+!     return DM_profile(r,0,z);
+!   }
+! }
+   
+  //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****|
+   
+!  double Galprop::DM_profile_av(double x,double y,double z,double dx,double dy,double dz,double dzz)
+! {  
+!   if (2*dzz < dz) {
+!     double DM_profile_av_=0.0;
+!     int nuse=0;
+! 
+!     for (double zz=z-dz/2.; zz<=z+dz/2.; zz+=dzz)
+!       for (double xx=x-dx/2.; xx<=x+dx/2.; xx+=dx/10.)
+!         for (double yy=y-dy/2.; yy<=y+dy/2.; yy+=dy/10.)
+!         {
+!           DM_profile_av_+=DM_profile(xx,yy,zz);
+!           nuse++;
+!         }
+!     return DM_profile_av_/nuse;
+!   } else {
+!     return DM_profile(x,y,z);
+    }
++ }
+  
+! //**.****|****.****|****.****|****.****|****.****|****.****|****.****|****.****| RUIZ:28112017
+Только в /home/andrei/GP/galprop_v57/source: gen_IC_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_IC_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_ionization_rate.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_isrf_energy_density.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_knock_on_electron_source.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_luminosity.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_pi0_decay_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_pp_deuteron_source.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_secondary_antiproton_source.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_secondary_pair_source.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_secondary_positron_source.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_secondary_proton_source.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_secondary_source.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_skymaps.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_synch_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: gen_tertiary_antiproton_source.cc
+Только в /home/andrei/GP/galprop_v57/source: grid.cc
+Только в /home/andrei/GP/galprop_v57/source: GridFunctions.cc
+Только в /home/andrei/GP/galprop_v57/source: GridFunctions.h
+Только в /home/andrei/GP/galprop_v57/source: Grid.h
+Только в /home/andrei/GP/galprop_v57/source: integ.cc
+Только в /home/andrei/GP/galprop_v57/source: integ.h
+Только в /home/andrei/GP/galprop_v57/source: ionization_bethe.cc
+Только в /home/andrei/GP/galprop_v57/source: isrf_energy_density.cc
+Только в /home/andrei/GP/galprop_v57/source: j0zero500.dat
+Только в /home/andrei/GP/galprop_v57/source: kappa_free_free.cc
+Только в /home/andrei/GP/galprop_v57/source: kappa_free_free.h
+Только в /home/andrei/GP/galprop_v57/source: kinematic.cc
+Только в /home/andrei/GP/galprop_v57/source: LimitedPowerLawSD.cc
+Только в /home/andrei/GP/galprop_v57/source: LimitedPowerLawSD.h
+Только в /home/andrei/GP/galprop_v57/source: los_integration.cc
+Только в /home/andrei/GP/galprop_v57/source: los_integration.h
+Только в /home/andrei/GP/galprop_v57/source: los_intersection.cc
+Только в /home/andrei/GP/galprop_v57/source: los_intersection.h
+Только в /home/andrei/GP/galprop_v57/source: modulate.cc
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/nH.cc" /home/andrei/GP/galprop_v57/source/nH.cc
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/nH.cc"	2023-03-23 13:05:33.970948208 +0300
+--- /home/andrei/GP/galprop_v57/source/nH.cc	2022-06-08 20:09:15.000000000 +0300
+***************
+*** 78,84 ****
+  
+  namespace nH_models {
+     int nHI_model=2, nH2_model=2, nHII_model=1; // intialize to original models
+-    double nHII_norm = 0;
+     int debug=0; 
+  
+     std::vector<std::unique_ptr<GalacticStructure::CylindricalProfile> > nHI_prof, nH2_prof, nHII_prof; // using libgalstruct for more runtime configurability
+--- 78,83 ----
+***************
+*** 186,192 ****
+    nHI_model = galdef.nHI_model;
+    nH2_model = galdef.nH2_model;
+    nHII_model= galdef.nHII_model;
+-   nHII_norm = galdef.DM_double4;
+    debug=0;
+  
+    ostringstream buf;
+--- 185,190 ----
+***************
+*** 272,286 ****
+          //The default model
+          result = nHI(r, z);//(3 == galaxy.n_spatial_dimensions && r <= 1.52 ? MilkyWayAnalyticBulge::HIAnalyticBulgeDensity(x, y, z) : nHI(r, z));
+          break;
+!      case 3:
+!         result = 0; //test
+!         break;
+!      case 4:
+!         result = 0.269*(0.84*pow(10,sin(Pi/2*pow(r/11.5,1.35)))+r*r/529+0.23/pow(r+1.8,0.7))*exp(-z*z/0.0072); // M31 
+!         break;
+!      case 5:
+!      	result = 0.269*(0.42*pow(10,sin(Pi/2*pow(r/11.5,1.35)))+r*r/529+0.23/pow(r+1.8,0.7))*exp(-z*z/0.0072); // old M31 with lowered density
+!      	break;
+       case 9:
+          {
+             //lib galstruct model
+--- 270,276 ----
+          //The default model
+          result = nHI(r, z);//(3 == galaxy.n_spatial_dimensions && r <= 1.52 ? MilkyWayAnalyticBulge::HIAnalyticBulgeDensity(x, y, z) : nHI(r, z));
+          break;
+! 
+       case 9:
+          {
+             //lib galstruct model
+***************
+*** 289,295 ****
+             for (size_t i(0); i < nHI_prof.size(); ++i)
+                result += (*nHI_prof[i])(r,theta,z);
+  
+!         break;
+          }
+  
+          /*
+--- 279,285 ----
+             for (size_t i(0); i < nHI_prof.size(); ++i)
+                result += (*nHI_prof[i])(r,theta,z);
+  
+!            break;
+          }
+  
+          /*
+***************
+*** 358,369 ****
+          //The default model
+          result = nH2(r, z, xCO);//(3 == galaxy.n_spatial_dimensions && r <= 1.22 ? MilkyWayAnalyticBulge::H2AnalyticBulgeDensity(x, y, z) : nH2(r, z, xCO));
+          break;
+!      case 3:
+!         result = 0; //test
+!         break;
+!      case 4:
+!         result = 0.538*(0.073+0.42*exp(-pow(r-4.35,2))+exp(-pow(r-10.8,2)/3.5))*exp(-z*z/0.0009); //M31   
+!         break;
+       case 9:
+          {
+             //libgalstruct model
+--- 348,354 ----
+          //The default model
+          result = nH2(r, z, xCO);//(3 == galaxy.n_spatial_dimensions && r <= 1.22 ? MilkyWayAnalyticBulge::H2AnalyticBulgeDensity(x, y, z) : nH2(r, z, xCO));
+          break;
+! 
+       case 9:
+          {
+             //libgalstruct model
+***************
+*** 593,603 ****
+       case 3:
+          //The first three models are dealt with in nHII!
+          result = nHII(r, z);
+          break;
+!      case 4: result = nHII_norm*exp(-r*r/100-fabs(z));   //M31
+!         break;    
+!      case 5: result = 0.1;   //M31-test
+!         break; 
+       case 9:
+          {
+             //libgalstruct model
+--- 578,586 ----
+       case 3:
+          //The first three models are dealt with in nHII!
+          result = nHII(r, z);
++ 
+          break;
+! 
+       case 9:
+          {
+             //libgalstruct model
+Только в /home/andrei/GP/galprop_v57/source: nuclei_normalize.cc
+Только в /home/andrei/GP/galprop_v57/source: Particle.cc
+Только в /home/andrei/GP/galprop_v57/source: Particle.h
+Только в /home/andrei/GP/galprop_v57/source: postInstallScript.cmake
+Только в /home/andrei/GP/galprop_v57/source: PowerLawSD.cc
+Только в /home/andrei/GP/galprop_v57/source: PowerLawSD.h
+Только в /home/andrei/GP/galprop_v57/source: ppfrag.cc
+Только в /home/andrei/GP/galprop_v57/source: print_BC.cc
+Только в /home/andrei/GP/galprop_v57/source: ProductionMatrices.cc
+Только в /home/andrei/GP/galprop_v57/source: ProductionMatrices.h
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/propagate_particles.cc" /home/andrei/GP/galprop_v57/source/propagate_particles.cc
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/propagate_particles.cc"	2023-03-23 13:03:41.451992991 +0300
+--- /home/andrei/GP/galprop_v57/source/propagate_particles.cc	2022-06-08 20:09:15.000000000 +0300
+***************
+*** 126,132 ****
+    //cout<<">>>>propagate_particles"<<endl;
+  
+    INFO("Entry");
+-   if(galdef.DM_gammas==2) {INFO("Exit"); return 0; }  //AE20160502
+    
+    assert(galdef.warm_start == 0 || galdef.warm_start == 1); // Only valid values for entry into this code path
+  
+--- 126,131 ----
+Только в /home/andrei/GP/galprop_v57/source: PropelBase.h
+Только в /home/andrei/GP/galprop_v57/source: PropelBelos.cc
+Только в /home/andrei/GP/galprop_v57/source: PropelBelos.h
+Только в /home/andrei/GP/galprop_v57/source: PropelBiCGSTAB.cc
+Только в /home/andrei/GP/galprop_v57/source: PropelBiCGSTAB.h
+Только в /home/andrei/GP/galprop_v57/source: propel.cc
+Только в /home/andrei/GP/galprop_v57/source: propel_diagnostics.cc
+Только в /home/andrei/GP/galprop_v57/source: PropelOperatorSplitting.cc
+Только в /home/andrei/GP/galprop_v57/source: PropelOperatorSplitting.h
+Только в /home/andrei/GP/galprop_v57/source: protri.cc
+Только в /home/andrei/GP/galprop_v57/source: RadiationField.cc
+Только в /home/andrei/GP/galprop_v57/source: RadiationField.h
+Только в /home/andrei/GP/galprop_v57/source: read_gas_maps.cc
+Только в /home/andrei/GP/galprop_v57/source: read_gcr.cc
+Только в /home/andrei/GP/galprop_v57/source: read_isrf.cc
+Только в /home/andrei/GP/galprop_v57/source: SmoothPowerLawSD.cc
+Только в /home/andrei/GP/galprop_v57/source: SmoothPowerLawSD.h
+Только в /home/andrei/GP/galprop_v57/source: SourceClass.cc
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_Compatibility.cc
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_Compatibility.h
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_Discrete_UniformSpectra.cc
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_Discrete_UniformSpectra.h
+Только в /home/andrei/GP/galprop_v57/source: SourceClass.h
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_PulsarSource.cc
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_PulsarSource.h
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_RadialSpectra.cc
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_RadialSpectra.h
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_UniformSpectra.cc
+Только в /home/andrei/GP/galprop_v57/source: SourceClass_UniformSpectra.h
+Только в /home/andrei/GP/galprop_v57/source: source_distribution.cc
+Только в /home/andrei/GP/galprop_v57/source: source_SNR_event.cc
+Только в /home/andrei/GP/galprop_v57/source: source_SNR_event_vec.cc
+Только в /home/andrei/GP/galprop_v57/source: SpatialDistribution.cc
+Только в /home/andrei/GP/galprop_v57/source: SpatialDistribution.h
+Только в /home/andrei/GP/galprop_v57/source: SpectralDistribution.cc
+Только в /home/andrei/GP/galprop_v57/source: SpectralDistribution.h
+Только в /home/andrei/GP/galprop_v57/source: Spectrum.h
+Только в /home/andrei/GP/galprop_v57/source: StellarGeometryDistributions.h
+Только в /home/andrei/GP/galprop_v57/source: stokes.cc
+Только в /home/andrei/GP/galprop_v57/source: store_bremss_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: store_bremss_H2R_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_bremss_HII_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_bremss_HIR_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_bremss_ionized_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_bremss_skymap.cc
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/store_distribution.cc" /home/andrei/GP/galprop_v57/source/store_distribution.cc
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/store_distribution.cc"	2023-03-23 13:03:39.456000057 +0300
+--- /home/andrei/GP/galprop_v57/source/store_distribution.cc	2022-06-08 20:09:15.000000000 +0300
+***************
+*** 172,184 ****
+  
+      if (naxes.size() == 3) {
+        fits.pHDU().addKey("CRVAL3", log10(Evec[nbegin[2]]), "Log10 of first point");
+        fits.pHDU().addKey("CRPIX3", 1, "");
+        if (sync) {
+!         fits.pHDU().addKey("CDELT3", log10(galdef.nu_synch_factor), "Log10 step size");  //AE08022023
+!         fits.pHDU().addKey("CTYPE3", "Frequency", "Synchrotron frequency"); 
+          fits.pHDU().addKey("CUNIT3", "Hz", "");
+        } else {
+-         fits.pHDU().addKey("CDELT3", log10(galdef.E_gamma_factor), "Log10 step size");   //AE08022023
+          fits.pHDU().addKey("CTYPE3", "Energy", "Gamma ray energy");
+          fits.pHDU().addKey("CUNIT3", "MeV", "");
+        }
+--- 172,183 ----
+  
+      if (naxes.size() == 3) {
+        fits.pHDU().addKey("CRVAL3", log10(Evec[nbegin[2]]), "Log10 of first point");
++       fits.pHDU().addKey("CDELT3", log10(Evec[1]/Evec[0]), "Log10 step size");
+        fits.pHDU().addKey("CRPIX3", 1, "");
+        if (sync) {
+!         fits.pHDU().addKey("CTYPE3", "Frequency", "Synchrotron frequency");
+          fits.pHDU().addKey("CUNIT3", "Hz", "");
+        } else {
+          fits.pHDU().addKey("CTYPE3", "Energy", "Gamma ray energy");
+          fits.pHDU().addKey("CUNIT3", "MeV", "");
+        }
+***************
+*** 243,255 ****
+  
+      if (naxes.size() == 4) {
+        fits.pHDU().addKey("CRVAL4", log10(Evec[nbegin[3]]), "Log10 of first point");
+        fits.pHDU().addKey("CRPIX4", 1, "");
+        if (sync) {
+-         fits.pHDU().addKey("CDELT4", log10(galdef.nu_synch_factor), "Log10 step size");  //AE08022023
+          fits.pHDU().addKey("CTYPE4", "Frequency", "Synchrotron frequency");
+          fits.pHDU().addKey("CUNIT4", "Hz", "");
+        } else {
+-         fits.pHDU().addKey("CDELT4", log10(galdef.E_gamma_factor), "Log10 step size");   //AE08022023
+          fits.pHDU().addKey("CTYPE4", "Energy", "Gamma ray energy");
+          fits.pHDU().addKey("CUNIT4", "MeV", "");
+        }
+--- 242,253 ----
+  
+      if (naxes.size() == 4) {
+        fits.pHDU().addKey("CRVAL4", log10(Evec[nbegin[3]]), "Log10 of first point");
++       fits.pHDU().addKey("CDELT4", log10(Evec[1]/Evec[0]), "Log10 step size");
+        fits.pHDU().addKey("CRPIX4", 1, "");
+        if (sync) {
+          fits.pHDU().addKey("CTYPE4", "Frequency", "Synchrotron frequency");
+          fits.pHDU().addKey("CUNIT4", "Hz", "");
+        } else {
+          fits.pHDU().addKey("CTYPE4", "Energy", "Gamma ray energy");
+          fits.pHDU().addKey("CUNIT4", "MeV", "");
+        }
+Только в /home/andrei/GP/galprop_v57/source: store_DM_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: store_DM_skymap.cc
+diff -c "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/store_gcr.cc" /home/andrei/GP/galprop_v57/source/store_gcr.cc
+*** "\320\234\320\276\320\264. \321\204\320\260\320\271\320\273\321\213 GPv57/store_gcr.cc"	2023-03-23 13:03:56.363939346 +0300
+--- /home/andrei/GP/galprop_v57/source/store_gcr.cc	2022-06-08 20:09:15.000000000 +0300
+***************
+*** 20,27 ****
+  int Galprop::store_gcr(bool full, std::string fname) {
+  
+    INFO("Entry");
+!   if(!n_species) {INFO("Nothing to store - exit"); return 0; }    // AE20160501 for DM_gammas alone
+!   
+    //const std::string outfile = "!" + configure.fOutputDirectory + configure.fOutputPrefix 
+    //  + "nuclei_" + (full ? "full_" : "") + galdef.galdef_ID + configure.fExtraAnnotations + (fname.empty() ? ".gz" : fname + ".gz");
+    const std::string outfile = "!" + configure.fOutputDirectory + configure.fOutputPrefix 
+--- 20,26 ----
+  int Galprop::store_gcr(bool full, std::string fname) {
+  
+    INFO("Entry");
+! 
+    //const std::string outfile = "!" + configure.fOutputDirectory + configure.fOutputPrefix 
+    //  + "nuclei_" + (full ? "full_" : "") + galdef.galdef_ID + configure.fExtraAnnotations + (fname.empty() ? ".gz" : fname + ".gz");
+    const std::string outfile = "!" + configure.fOutputDirectory + configure.fOutputPrefix 
+Только в /home/andrei/GP/galprop_v57/source: store_gcr_full.cc
+Только в /home/andrei/GP/galprop_v57/source: store_gcr_source_functions.cc
+Только в /home/andrei/GP/galprop_v57/source: store_IC_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: store_IC_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_IC_skymap_comp.cc
+Только в /home/andrei/GP/galprop_v57/source: store_ionization_rate.cc
+Только в /home/andrei/GP/galprop_v57/source: store_luminosity.cc
+Только в /home/andrei/GP/galprop_v57/source: store_mapcube_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_pi0_decay_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: store_pi0_decay_H2R_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_pi0_decay_HII_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_pi0_decay_HIR_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_pi0_decay_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: store_synch_emiss.cc
+Только в /home/andrei/GP/galprop_v57/source: store_synch_skymap.cc
+Только в /home/andrei/GP/galprop_v57/source: synchrotron.cc
+Только в /home/andrei/GP/galprop_v57/source: synchrotron_emissivity_aws.cc
+Только в /home/andrei/GP/galprop_v57/source: synchrotron_emissivity_aws.h
+Только в /home/andrei/GP/galprop_v57/source: synchrotron_emissivity_B_field.cc
+Только в /home/andrei/GP/galprop_v57/source: synchrotron_emissivity_B_field.h
+Только в /home/andrei/GP/galprop_v57/source: synchrotron_emissivity.cc
+Только в /home/andrei/GP/galprop_v57/source: synchrotron_emissivity.h
+Только в /home/andrei/GP/galprop_v57/source: synchrotron.h
+Только в /home/andrei/GP/galprop_v57/source: test_Distribution.cc
+Только в /home/andrei/GP/galprop_v57/source: test_float_accuracy.cc
+Только в /home/andrei/GP/galprop_v57/source: test_isotope_cs.cc
+Только в /home/andrei/GP/galprop_v57/source: test_nH.cc
+Только в /home/andrei/GP/galprop_v57/source: test_Particle.cc
+Только в /home/andrei/GP/galprop_v57/source: test_source_SNR_event.cc
+Только в /home/andrei/GP/galprop_v57/source: test_sync_package.cc
+Только в /home/andrei/GP/galprop_v57/source: tridag.cc
+Только в /home/andrei/GP/galprop_v57/source: tridag_ext.cc
+Только в /home/andrei/GP/galprop_v57/source: tridag_sym.cc
+Только в /home/andrei/GP/galprop_v57/source: tridag_sym_ext.cc
