@@ -1233,7 +1233,7 @@ diff -c ./galprop_v57_release_r1/source/nH.cc ./gpdm/source/nH.cc
 !         result = 0; //test
 !         break;
 !      case 4:
-!         result = 0.538*(0.073+0.42*exp(-pow(r-4.35,2))+exp(-pow(r-10.8,2)/3.5))*exp(-z*z/0.0009); //M31   
+!         result = 0.538*(0.073+0.42*exp(-pow(r-4.35,2))+exp(-pow(r-10.8,2)/3.5))*exp(-z*z/0.0018); //M31   
 !         break;
        case 9:
           {
